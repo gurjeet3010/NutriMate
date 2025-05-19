@@ -64,7 +64,7 @@ An AI-powered web application that provides personalized meal and nutrition reco
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/gujeet3004/NutriMate.git
+   git clone https://github.com/gujeet3010/NutriMate.git
    cd NutriMate
     ```
 
