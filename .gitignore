@@ -15,6 +15,12 @@ __pycache__/
 *.pyo
 *.pyd
 
+# Environment Variables & API Keys
+.env
+*.env
+*.key
+credentials.json
+
 # IDE & OS Artifacts
 .vscode/
 .idea/
