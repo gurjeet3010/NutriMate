@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutriMate - Your Personalized Diet Plan</title>
+  <!-- Google Fonts & Chart.js -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Outfit', 'Segoe UI', sans-serif;
+      background: #faedcd;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 30px 15px;
+      background-image: url("background.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed; 
+      background-position: center;
+      color: #2b2b2b;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 950px;
+      background: rgba(248, 251, 242, 0.95);
+      backdrop-filter: blur(12px);
+      padding: 35px 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .header-banner {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .header-banner h2 {
+      font-size: 32px;
+      color: #283618;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .header-banner p {
+      font-size: 16px;
+      color: #606c38;
+    }
+
+    /* User Profile Card */
+    .user-info {
+      background: #fefae0;
+      border: 1px solid #dda15e;
+      border-radius: 14px;
+      padding: 20px 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    
+    .user-info-item {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .user-info-item span.label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #bc6c25;
+      font-weight: 600;
+    }
+
+    .user-info-item span.val {
+      font-size: 17px;
+      font-weight: 700;
+      color: #283618;
+    }
+    
+    .nutrition-tip {
+      background-color: #e9edc9;
+      border-left: 5px solid #606c38;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      font-style: italic;
+      font-size: 15px;
+      color: #283618;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Dashboard Analytics Section */
+    .dashboard-analytics {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 35px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e2e8f0;
+    }
+
+    .analytics-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #283618;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .stat-card {
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 12px;
+      border-left: 4px solid #606c38;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    .stat-card.calories { border-left-color: #e76f51; }
+    .stat-card.protein { border-left-color: #2a9d8f; }
+    .stat-card.carbs { border-left-color: #e9c46a; }
+    .stat-card.fat { border-left-color: #f4a261; }
+
+    .stat-card .num {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 4px;
+    }
+
+    .stat-card .lbl {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      align-items: center;
+    }
+
+    .chart-box {
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 12px;
+      position: relative;
+      height: 250px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chart-box canvas {
+      max-height: 200px;
+    }
+
+    /* Meal Sections */
+    .meal-section {
+      margin-bottom: 30px;
+    }
+    
+    .meal-section h3 {
+      font-size: 22px;
+      color: #283618;
+      border-bottom: 2px solid #ccd5ae;
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .meal-section h3 span.badge {
+      font-size: 13px;
+      background: #e9edc9;
+      color: #606c38;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .food-item {
+      background-color: #ffffff;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .food-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.09);
+    }
+
+    .food-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .food-item h4 {
+      font-size: 18px;
+      color: #1e293b;
+      font-weight: 600;
+    }
+
+    .veg-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .veg-badge.veg {
+      background-color: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .veg-badge.non-veg {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .food-item p.benefit {
+      font-size: 14px;
+      color: #475569;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    .macro-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      font-size: 12px;
+      background: #f1f5f9;
+      color: #334155;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .tag.cal { background: #ffedd5; color: #9a3412; font-weight: 600; }
+
+    /* Swap Button */
+    .swap-btn {
+      width: 100%;
+      padding: 9px 14px;
+      background-color: #f8fafc;
+      color: #606c38;
+      border: 1.5px dashed #606c38;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .swap-btn:hover {
+      background-color: #606c38;
+      color: white;
+      border-style: solid;
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 30px;
+    }
+
+    .back-button {
+      padding: 12px 28px;
+      background-color: #606c38;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .back-button:hover {
+      background-color: #283618;
+    }
+
+    /* Floating Chatbot UI */
+    #chatbot-toggle {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: #606c38;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+      z-index: 1000;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #chatbot-toggle:hover {
+      background-color: #283618;
+      transform: translateY(-2px);
+    }
+
+    #chatbot-box {
+      position: fixed;
+      bottom: 90px;
+      right: 25px;
+      width: 330px;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      z-index: 1000;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    #chatbot-header {
+      background-color: #606c38;
+      color: white;
+      padding: 14px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    #chatbot-body {
+      padding: 14px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    #chat-messages {
+      font-size: 14px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #chat-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 14px;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header-banner">
+      <h2>🥗 Your Personal Nutrition Dashboard</h2>
+      <p>Customized AI meal plan optimized for your body metrics & fitness goals</p>
+    </div>
+    
+    <!-- User Info Card -->
+    <div class="user-info" id="user-info">
+      <!-- Populated dynamically -->
+    </div>
+    
+    <!-- Nutrition Tip Banner -->
+    <div class="nutrition-tip" id="nutrition-tip">
+      💡 Loading personalized nutrition insights...
+    </div>
+
+    <!-- Interactive Dashboard Analytics & Charts -->
+    <div class="dashboard-analytics">
+      <div class="analytics-title">📊 Macro & Calorie Breakdown</div>
+      
+      <!-- Quick Stats Row -->
+      <div class="stats-row">
+        <div class="stat-card calories">
+          <div class="lbl">Daily Calories</div>
+          <div class="num" id="stat-calories">0 kcal</div>
+        </div>
+        <div class="stat-card protein">
+          <div class="lbl">Est. Protein</div>
+          <div class="num" id="stat-protein">0g</div>
+        </div>
+        <div class="stat-card carbs">
+          <div class="lbl">Est. Carbs</div>
+          <div class="num" id="stat-carbs">0g</div>
+        </div>
+        <div class="stat-card fat">
+          <div class="lbl">Est. Fiber / Fat</div>
+          <div class="num" id="stat-fat">0g</div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="charts-grid">
+        <div class="chart-box">
+          <canvas id="macroChart"></canvas>
+        </div>
+        <div class="chart-box">
+          <canvas id="calorieChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diet Plan Sections -->
+    <div id="diet-plan-container">
+      <!-- Breakfast -->
+      <div class="meal-section" id="breakfast-section">
+        <h3>🌅 Breakfast <span class="badge">Morning Boost</span></h3>
+        <div class="food-grid" id="breakfast-foods"></div>
+      </div>
+      
+      <!-- Lunch -->
+      <div class="meal-section" id="lunch-section">
+        <h3>☀️ Lunch <span class="badge">Sustained Energy</span></h3>
+        <div class="food-grid" id="lunch-foods"></div>
+      </div>
+      
+      <!-- Dinner -->
+      <div class="meal-section" id="dinner-section">
+        <h3>🌙 Dinner <span class="badge">Rest & Recovery</span></h3>
+        <div class="food-grid" id="dinner-foods"></div>
+      </div>
+      
+      <!-- Snacks -->
+      <div class="meal-section" id="snacks-section">
+        <h3>🍎 Healthy Snacks <span class="badge">Metabolism Fuel</span></h3>
+        <div class="food-grid" id="snacks-foods"></div>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="back-button" onclick="window.history.back()">← Edit Details</button>
+    </div>
+  </div>
+
+  <!-- Floating AI Assistant -->
+  <div id="chatbot-toggle" onclick="toggleChatbot()">🤖 Ask NutriMate AI</div>
+
+  <div id="chatbot-box" style="display: none;">
+    <div id="chatbot-header">NutriMate Assistant</div>
+    <div id="chatbot-body">
+      <div id="chat-messages">
+        <div><strong>NutriMate AI:</strong> Hello! Ask me any question about your meal plan or macro targets.</div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">
+        <button onclick="sendQuickPrompt('High protein options')" style="font-size: 11px; padding: 4px 8px; background: #e9edc9; border: 1px solid #ccd5ae; border-radius: 12px; cursor: pointer;">💪 High Protein</button>
+        <button onclick="sendQuickPrompt('Hydration advice')" style="font-size: 11px; padding: 4px 8px; background: #e9edc9; border: 1px solid #ccd5ae; border-radius: 12px; cursor: pointer;">💧 Hydration</button>
+        <button onclick="sendQuickPrompt('Weight loss tips')" style="font-size: 11px; padding: 4px 8px; background: #e9edc9; border: 1px solid #ccd5ae; border-radius: 12px; cursor: pointer;">📉 Weight Loss</button>
+        <button onclick="sendQuickPrompt('Muscle gain tips')" style="font-size: 11px; padding: 4px 8px; background: #e9edc9; border: 1px solid #ccd5ae; border-radius: 12px; cursor: pointer;">🏋️ Muscle Gain</button>
+      </div>
+      <input type="text" id="chat-input" placeholder="Type your question..." onkeydown="if(event.key==='Enter') sendMessage()" />
+    </div>
+  </div>
+
+  <script>
+    // Master food dataset for client-side fallback & dynamic item swapping
+    const foodDatabase = [
+      {name: "Asparagus Cooked", benefit: "High in vitamin K, folate and antioxidants", meal: "lunch,dinner", isVeg: true, calories: 22, protein: 2.2, carbs: 3.8, fat: 0.2},
+      {name: "Avocados", benefit: "Rich in healthy fats and potassium", meal: "breakfast", isVeg: true, calories: 160, protein: 2.0, carbs: 8.5, fat: 14.7},
+      {name: "Bananas", benefit: "Great source of potassium and vitamin B6", meal: "breakfast", isVeg: true, calories: 89, protein: 1.1, carbs: 22.8, fat: 0.3},
+      {name: "Bagels wheat", benefit: "Provides complex carbohydrates for energy", meal: "breakfast,lunch", isVeg: true, calories: 250, protein: 10.0, carbs: 48.0, fat: 1.5},
+      {name: "Berries Mix", benefit: "High in antioxidants and vitamin C", meal: "breakfast,snacks", isVeg: true, calories: 60, protein: 1.0, carbs: 14.0, fat: 0.5},
+      {name: "Broccoli Steamed", benefit: "Rich in vitamins K and C, potent antioxidant", meal: "lunch,dinner", isVeg: true, calories: 35, protein: 2.8, carbs: 7.0, fat: 0.4},
+      {name: "Brown Rice", benefit: "Good source of fiber and magnesium", meal: "lunch,dinner", isVeg: true, calories: 216, protein: 5.0, carbs: 45.0, fat: 1.8},
+      {name: "Cauliflower Roast", benefit: "High in fiber and vitamins C, K and B6", meal: "lunch,dinner", isVeg: true, calories: 40, protein: 2.0, carbs: 8.0, fat: 0.5},
+      {name: "American cheese", benefit: "Good source of calcium and protein", meal: "breakfast,snacks", isVeg: true, calories: 120, protein: 6.0, carbs: 2.0, fat: 9.0},
+      {name: "Dark Chocolate", benefit: "Contains antioxidants for heart health", meal: "snacks", isVeg: true, calories: 170, protein: 2.2, carbs: 13.0, fat: 12.0},
+      {name: "Greek Yogurt", benefit: "High in protein and probiotics for gut health", meal: "breakfast,snacks", isVeg: true, calories: 100, protein: 12.0, carbs: 6.0, fat: 2.0},
+      {name: "Oatmeal with fruits", benefit: "Heart-healthy and rich in fiber", meal: "breakfast", isVeg: true, calories: 220, protein: 6.0, carbs: 38.0, fat: 4.0},
+      {name: "Avocado Toast", benefit: "Provides healthy fats and fiber", meal: "breakfast", isVeg: true, calories: 250, protein: 6.0, carbs: 28.0, fat: 12.0},
+      {name: "Egg white omelet", benefit: "High-protein and low-fat breakfast option", meal: "breakfast", isVeg: false, calories: 150, protein: 18.0, carbs: 2.0, fat: 3.0},
+      {name: "Grilled chicken salad", benefit: "Lean protein with vitamins and fiber", meal: "lunch", isVeg: false, calories: 220, protein: 28.0, carbs: 8.0, fat: 5.0},
+      {name: "Turkey wrap", benefit: "Lean protein option ideal for energy", meal: "lunch", isVeg: false, calories: 300, protein: 24.0, carbs: 32.0, fat: 7.0},
+      {name: "Tuna sandwich", benefit: "Omega-3 rich with quality protein", meal: "lunch", isVeg: false, calories: 280, protein: 22.0, carbs: 30.0, fat: 6.0},
+      {name: "Grilled salmon", benefit: "High in protein and omega-3 fatty acids", meal: "dinner", isVeg: false, calories: 260, protein: 26.0, carbs: 0.0, fat: 15.0},
+      {name: "Vegetable stir-fry", benefit: "Low-calorie and packed with micronutrients", meal: "lunch,dinner", isVeg: true, calories: 180, protein: 5.0, carbs: 22.0, fat: 6.0},
+      {name: "Tofu curry", benefit: "Plant-based protein rich in iron and calcium", meal: "lunch,dinner", isVeg: true, calories: 240, protein: 14.0, carbs: 12.0, fat: 11.0},
+      {name: "Lentil soup", benefit: "High in plant protein and fiber", meal: "lunch,dinner", isVeg: true, calories: 180, protein: 12.0, carbs: 28.0, fat: 2.0},
+      {name: "Quinoa bowl", benefit: "Complete protein with fiber and minerals", meal: "lunch,dinner", isVeg: true, calories: 250, protein: 9.0, carbs: 39.0, fat: 4.0},
+      {name: "Hummus with veggies", benefit: "Good source of fiber and plant-based protein", meal: "snacks", isVeg: true, calories: 160, protein: 5.0, carbs: 18.0, fat: 8.0},
+      {name: "Mixed almonds & walnuts", benefit: "High in healthy fats and protein", meal: "snacks", isVeg: true, calories: 200, protein: 6.0, carbs: 6.0, fat: 16.0},
+      {name: "Paneer Tikka", benefit: "Rich in calcium and vegetarian protein", meal: "lunch,dinner", isVeg: true, calories: 260, protein: 16.0, carbs: 8.0, fat: 14.0},
+      {name: "Protein Shake", benefit: "Quick muscle recovery drink", meal: "breakfast,snacks", isVeg: true, calories: 200, protein: 24.0, carbs: 5.0, fat: 3.0}
+    ];
+
+    const healthTips = {
+      "Diabetes": ["Choose low GI foods to maintain steady blood sugar levels.", "Include fiber-rich legumes and whole grains.", "Distribute carbohydrate intake evenly."],
+      "Hypertension": ["Limit sodium intake and replace salt with aromatic herbs.", "Eat potassium-rich foods like bananas and leafy greens.", "Follow DASH diet principles."],
+      "Heart Disease": ["Focus on heart-healthy fats from olive oil, salmon, and nuts.", "Limit saturated fats and sodium."],
+      "None": ["Drink at least 8 glasses of water daily.", "Balance your plate with equal proteins, complex carbs, and green vegetables."]
+    };
+
+    let currentDietPlan = { breakfast: [], lunch: [], dinner: [], snacks: [] };
+    let macroChartInstance = null;
+    let calorieChartInstance = null;
+
+    // Load User Information
+    function displayUserInfo() {
+      const userInfo = document.getElementById('user-info');
+      const name = localStorage.getItem('userName') || 'Friend';
+      const height = localStorage.getItem('userHeight') || '170';
+      const weight = localStorage.getItem('userWeight') || '70';
+      const goal = localStorage.getItem('userGoal') || 'Healthy';
+      const disease = localStorage.getItem('userDisease') || 'None';
+      const activity = localStorage.getItem('userActivity') || 'Moderate';
+
+      userInfo.innerHTML = `
+        <div class="user-info-item"><span class="label">Name</span><span class="val">${name}</span></div>
+        <div class="user-info-item"><span class="label">Height</span><span class="val">${height} cm</span></div>
+        <div class="user-info-item"><span class="label">Weight</span><span class="val">${weight} kg</span></div>
+        <div class="user-info-item"><span class="label">Goal</span><span class="val">${goal}</span></div>
+        <div class="user-info-item"><span class="label">Condition</span><span class="val">${disease}</span></div>
+        <div class="user-info-item"><span class="label">Activity</span><span class="val">${activity}</span></div>
+      `;
+
+      const tipElement = document.getElementById('nutrition-tip');
+      const conditionTips = healthTips[disease] || healthTips["None"];
+      const randomTip = conditionTips[Math.floor(Math.random() * conditionTips.length)];
+      tipElement.innerHTML = `💡 <strong>Dietitian Tip:</strong> ${randomTip}`;
+    }
+
+    // Helper to extract or fallback food properties
+    function normalizeFood(food, mealCategory) {
+      if (typeof food === 'string') {
+        const found = foodDatabase.find(item => item.name.toLowerCase() === food.toLowerCase());
+        if (found) return { ...found };
+        return {
+          name: food,
+          benefit: "Nutritious selection supporting your health target",
+          calories: 180,
+          protein: 8,
+          carbs: 22,
+          fat: 5,
+          isVeg: true,
+          meal: mealCategory
+        };
+      }
+      return {
+        name: food.name || "Healthy Choice",
+        benefit: food.benefit || "Nutritious option",
+        calories: parseInt(food.calories) || 180,
+        protein: parseFloat(food.protein) || 8,
+        carbs: parseFloat(food.carbs) || 22,
+        fat: parseFloat(food.fat) || 5,
+        isVeg: food.isVeg !== undefined ? food.isVeg : true,
+        meal: mealCategory
+      };
+    }
+
+    // Render Food Cards
+    function renderFoodCard(food, mealCategory, index) {
+      const foodItem = document.createElement('div');
+      foodItem.className = 'food-item';
+      
+      const isVegBadge = food.isVeg ? 
+        `<span class="veg-badge veg">🌱 VEG</span>` : 
+        `<span class="veg-badge non-veg">🍗 NON-VEG</span>`;
+
+      foodItem.innerHTML = `
+        <div>
+          <div class="food-header">
+            <h4>${food.name}</h4>
+            ${isVegBadge}
+          </div>
+          <p class="benefit">${food.benefit}</p>
+          <div class="macro-tags">
+            <span class="tag cal">🔥 ${food.calories} kcal</span>
+            <span class="tag">💪 ${food.protein}g Protein</span>
+            <span class="tag">🌾 ${food.carbs}g Carbs</span>
+          </div>
+        </div>
+        <button class="swap-btn" onclick="swapItem('${mealCategory}', ${index})">
+          🔄 Swap Item
+        </button>
+      `;
+
+      return foodItem;
+    }
+
+    // Item Swapping Logic
+    function swapItem(mealCategory, index) {
+      const isVegOnly = localStorage.getItem('userDietType') === '1';
+      const alternatives = foodDatabase.filter(item => {
+        const matchesMeal = item.meal.includes(mealCategory);
+        const matchesVeg = !isVegOnly || item.isVeg;
+        const isDifferent = item.name.toLowerCase() !== currentDietPlan[mealCategory][index].name.toLowerCase();
+        return matchesMeal && matchesVeg && isDifferent;
+      });
+
+      if (alternatives.length > 0) {
+        const newItem = alternatives[Math.floor(Math.random() * alternatives.length)];
+        currentDietPlan[mealCategory][index] = newItem;
+        localStorage.setItem('dietPlan', JSON.stringify(currentDietPlan));
+        renderDietPlan();
+      } else {
+        alert("No further alternative items found for this category.");
+      }
+    }
+
+    // Render Entire Diet Plan & Update Dashboard
+    function renderDietPlan() {
+      ['breakfast', 'lunch', 'dinner', 'snacks'].forEach(category => {
+        const container = document.getElementById(`${category}-foods`);
+        container.innerHTML = '';
+        if (currentDietPlan[category] && currentDietPlan[category].length > 0) {
+          currentDietPlan[category].forEach((food, index) => {
+            container.appendChild(renderFoodCard(food, category, index));
+          });
+        } else {
+          container.innerHTML = '<p style="color:#64748b;">No items recommended.</p>';
+        }
+      });
+
+      updateAnalyticsCharts();
+    }
+
+    // Calculate Totals & Render Charts
+    function updateAnalyticsCharts() {
+      let totalCalories = 0;
+      let totalProtein = 0;
+      let totalCarbs = 0;
+      let totalFat = 0;
+
+      ['breakfast', 'lunch', 'dinner', 'snacks'].forEach(category => {
+        if (currentDietPlan[category]) {
+          currentDietPlan[category].forEach(food => {
+            totalCalories += food.calories || 0;
+            totalProtein += food.protein || 0;
+            totalCarbs += food.carbs || 0;
+            totalFat += food.fat || 0;
+          });
+        }
+      });
+
+      // Update Quick Stats
+      document.getElementById('stat-calories').textContent = `${totalCalories} kcal`;
+      document.getElementById('stat-protein').textContent = `${Math.round(totalProtein)}g`;
+      document.getElementById('stat-carbs').textContent = `${Math.round(totalCarbs)}g`;
+      document.getElementById('stat-fat').textContent = `${Math.round(totalFat)}g`;
+
+      // Render Macro Donut Chart
+      const ctxMacro = document.getElementById('macroChart').getContext('2d');
+      if (macroChartInstance) macroChartInstance.destroy();
+
+      macroChartInstance = new Chart(ctxMacro, {
+        type: 'doughnut',
+        data: {
+          labels: ['Protein (g)', 'Carbs (g)', 'Fats/Fiber (g)'],
+          datasets: [{
+            data: [Math.round(totalProtein), Math.round(totalCarbs), Math.round(totalFat)],
+            backgroundColor: ['#2a9d8f', '#e9c46a', '#f4a261'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' },
+            title: { display: true, text: 'Macronutrient Distribution (g)' }
+          }
+        }
+      });
+
+      // Render Calorie Comparison Bar Chart
+      const userWeight = parseFloat(localStorage.getItem('userWeight')) || 70;
+      const targetGoal = localStorage.getItem('userGoal') || 'Healthy';
+      let targetCalories = Math.round(userWeight * 30);
+      if (targetGoal === 'Weight Loss') targetCalories -= 400;
+      if (targetGoal === 'Weight Gain') targetCalories += 500;
+
+      const ctxCal = document.getElementById('calorieChart').getContext('2d');
+      if (calorieChartInstance) calorieChartInstance.destroy();
+
+      calorieChartInstance = new Chart(ctxCal, {
+        type: 'bar',
+        data: {
+          labels: ['Plan Calories', 'Target Goal'],
+          datasets: [{
+            label: 'Calories (kcal)',
+            data: [totalCalories, targetCalories],
+            backgroundColor: ['#e76f51', '#283618'],
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'Calorie Target Comparison' }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    // Initialize Page
+    window.onload = function() {
+      displayUserInfo();
+      
+      let savedPlan = null;
+      try {
+        savedPlan = JSON.parse(localStorage.getItem('dietPlan'));
+      } catch (e) {}
+
+      if (savedPlan && savedPlan.breakfast && savedPlan.breakfast.length > 0) {
+        ['breakfast', 'lunch', 'dinner', 'snacks'].forEach(cat => {
+          currentDietPlan[cat] = (savedPlan[cat] || []).map(item => normalizeFood(item, cat));
+        });
+      } else {
+        // Generate Default Plan
+        const isVegOnly = localStorage.getItem('userDietType') === '1';
+        const filtered = foodDatabase.filter(food => !isVegOnly || food.isVeg);
+        
+        currentDietPlan.breakfast = filtered.filter(f => f.meal.includes('breakfast')).slice(0, 2);
+        currentDietPlan.lunch = filtered.filter(f => f.meal.includes('lunch')).slice(0, 2);
+        currentDietPlan.dinner = filtered.filter(f => f.meal.includes('dinner')).slice(0, 2);
+        currentDietPlan.snacks = filtered.filter(f => f.meal.includes('snacks')).slice(0, 2);
+      }
+
+      localStorage.setItem('dietPlan', JSON.stringify(currentDietPlan));
+      renderDietPlan();
+    };
+
+    // Chatbot toggles & prompt chips
+    function toggleChatbot() {
+      const box = document.getElementById('chatbot-box');
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function sendQuickPrompt(promptText) {
+      document.getElementById('chat-input').value = promptText;
+      sendMessage();
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      const chatBox = document.getElementById('chat-messages');
+      chatBox.innerHTML += `<div style="text-align: right; margin-bottom: 8px;"><span style="background: #606c38; color: white; padding: 8px 12px; border-radius: 12px 12px 2px 12px; display: inline-block; font-size: 13px;">${msg}</span></div>`;
+
+      input.value = '...thinking';
+      input.disabled = true;
+
+      const userContext = {
+        goal: localStorage.getItem('userGoal') || 'Healthy',
+        weight: localStorage.getItem('userWeight') || 70,
+        height: localStorage.getItem('userHeight') || 170,
+        veg: localStorage.getItem('userDietType') || 1
+      };
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/chat', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ query: msg, context: userContext })
+        });
+        const data = await response.json();
+        const replyText = data.reply || data.content || "I am here to support your nutrition journey!";
+        
+        chatBox.innerHTML += `<div style="text-align: left; margin-bottom: 8px;"><span style="background: #f1f5f9; color: #1e293b; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 12px 12px 12px 2px; display: inline-block; font-size: 13px; line-height: 1.4;">🤖 <strong>NutriMate:</strong> ${replyText}</span></div>`;
+      } catch (err) {
+        chatBox.innerHTML += `<div style="text-align: left; margin-bottom: 8px;"><span style="background: #fef2f2; color: #991b1b; padding: 8px 12px; border-radius: 12px; display: inline-block; font-size: 13px;">🤖 <strong>NutriMate:</strong> Great question! Maintain hydration and align your macronutrients with your ${userContext.goal} goal.</span></div>`;
+      }
+
+      input.value = '';
+      input.disabled = false;
+      input.focus();
+      document.getElementById('chatbot-body').scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>

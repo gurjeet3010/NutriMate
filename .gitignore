@@ -1,0 +1,22 @@
+# Project Documentation Files
+PRD.md
+Architecture.md
+Rules.md
+Phases.md
+Design.md
+Memory.md
+
+# Virtual Environments & Python Caches
+.venv/
+venv/
+ENV/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE & OS Artifacts
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
