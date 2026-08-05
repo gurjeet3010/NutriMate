@@ -14,10 +14,10 @@ try:
     from sklearn.ensemble import RandomForestClassifier
 except Exception as e:
     print(f"Optional imports skipped: {e}")
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS  # Import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)  # Enable CORS for all routes
  
 # Load datasets once at the top
@@ -912,6 +912,17 @@ def chat_assistant():
             "reply": "Focus on whole foods, adequate protein, and consistent hydration for optimal health!",
             "content": "Focus on whole foods, adequate protein, and consistent hydration for optimal health!"
         })
+
+# Unified Single-URL Frontend Serving Routes
+@app.route('/')
+def serve_index():
+    return send_from_directory('.', 'join.html')
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    if os.path.isfile(filename):
+        return send_from_directory('.', filename)
+    return send_from_directory('.', 'join.html')
 
 if __name__ == '__main__':
     # Print startup message
