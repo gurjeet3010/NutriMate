@@ -311,30 +311,146 @@
       border-style: solid;
     }
 
-    .action-row {
+    /* Grocery Shopping List Section */
+    .grocery-section {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 25px;
+      margin-top: 35px;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e2e8f0;
+    }
+
+    .grocery-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 30px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
     }
 
-    .back-button {
-      padding: 12px 28px;
-      background-color: #606c38;
-      color: white;
-      font-size: 16px;
+    .grocery-header h3 {
+      font-size: 22px;
+      color: #283618;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .grocery-categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .grocery-cat {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .grocery-cat h4 {
+      font-size: 15px;
+      color: #606c38;
+      margin-bottom: 12px;
+      font-weight: 700;
+      border-bottom: 1px solid #cbd5e1;
+      padding-bottom: 6px;
+    }
+
+    .grocery-list-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .grocery-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #334155;
+    }
+
+    .grocery-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #606c38;
+      cursor: pointer;
+    }
+
+    .grocery-item.checked span {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+
+    /* Action Buttons Row */
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-top: 35px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      font-size: 15px;
       font-weight: 600;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
     }
 
-    .back-button:hover {
+    .btn-primary {
+      background-color: #606c38;
+      color: white;
+    }
+
+    .btn-primary:hover {
       background-color: #283618;
+      transform: translateY(-1px);
     }
 
-    /* Floating Chatbot UI */
+    .btn-secondary {
+      background-color: #dda15e;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #bc6c25;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: #606c38;
+      border: 2px solid #606c38;
+    }
+
+    .btn-outline:hover {
+      background-color: #606c38;
+      color: white;
+    }
+
+    /* Floating AI Assistant UI */
     #chatbot-toggle {
       position: fixed;
       bottom: 25px;
@@ -401,6 +517,35 @@
       border: 1px solid #cbd5e1;
       font-size: 14px;
       outline: none;
+    }
+
+    /* Print & Export PDF Styling */
+    @media print {
+      body {
+        background: none !important;
+        background-image: none !important;
+        padding: 0 !important;
+        color: #000 !important;
+      }
+      .container {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        background: transparent !important;
+      }
+      #chatbot-toggle, #chatbot-box, .action-row, .swap-btn, .btn-group {
+        display: none !important;
+      }
+      .food-item {
+        break-inside: avoid;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+      }
+      .dashboard-analytics, .grocery-section {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+      }
     }
   </style>
 </head>
@@ -484,8 +629,25 @@
       </div>
     </div>
 
+    <!-- Grocery Shopping List Generator Section -->
+    <div class="grocery-section" id="grocery-section">
+      <div class="grocery-header">
+        <h3>🛒 Automated Grocery Shopping List</h3>
+        <span style="font-size: 13px; color: #64748b; font-weight: 500;">Interactive Checklist</span>
+      </div>
+      <div class="grocery-categories" id="grocery-categories">
+        <!-- Dynamically generated from current diet plan items -->
+      </div>
+    </div>
+
+    <!-- Action Buttons Row -->
     <div class="action-row">
-      <button class="back-button" onclick="window.history.back()">← Edit Details</button>
+      <button class="btn btn-outline" onclick="window.history.back()">← Edit Profile</button>
+      
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="scrollToGroceryList()">🛒 Grocery List</button>
+        <button class="btn btn-primary" onclick="exportPDFOrPrint()">🖨️ Export PDF / Print Plan</button>
+      </div>
     </div>
   </div>
 
@@ -511,32 +673,32 @@
   <script>
     // Master food dataset for client-side fallback & dynamic item swapping
     const foodDatabase = [
-      {name: "Asparagus Cooked", benefit: "High in vitamin K, folate and antioxidants", meal: "lunch,dinner", isVeg: true, calories: 22, protein: 2.2, carbs: 3.8, fat: 0.2},
-      {name: "Avocados", benefit: "Rich in healthy fats and potassium", meal: "breakfast", isVeg: true, calories: 160, protein: 2.0, carbs: 8.5, fat: 14.7},
-      {name: "Bananas", benefit: "Great source of potassium and vitamin B6", meal: "breakfast", isVeg: true, calories: 89, protein: 1.1, carbs: 22.8, fat: 0.3},
-      {name: "Bagels wheat", benefit: "Provides complex carbohydrates for energy", meal: "breakfast,lunch", isVeg: true, calories: 250, protein: 10.0, carbs: 48.0, fat: 1.5},
-      {name: "Berries Mix", benefit: "High in antioxidants and vitamin C", meal: "breakfast,snacks", isVeg: true, calories: 60, protein: 1.0, carbs: 14.0, fat: 0.5},
-      {name: "Broccoli Steamed", benefit: "Rich in vitamins K and C, potent antioxidant", meal: "lunch,dinner", isVeg: true, calories: 35, protein: 2.8, carbs: 7.0, fat: 0.4},
-      {name: "Brown Rice", benefit: "Good source of fiber and magnesium", meal: "lunch,dinner", isVeg: true, calories: 216, protein: 5.0, carbs: 45.0, fat: 1.8},
-      {name: "Cauliflower Roast", benefit: "High in fiber and vitamins C, K and B6", meal: "lunch,dinner", isVeg: true, calories: 40, protein: 2.0, carbs: 8.0, fat: 0.5},
-      {name: "American cheese", benefit: "Good source of calcium and protein", meal: "breakfast,snacks", isVeg: true, calories: 120, protein: 6.0, carbs: 2.0, fat: 9.0},
-      {name: "Dark Chocolate", benefit: "Contains antioxidants for heart health", meal: "snacks", isVeg: true, calories: 170, protein: 2.2, carbs: 13.0, fat: 12.0},
-      {name: "Greek Yogurt", benefit: "High in protein and probiotics for gut health", meal: "breakfast,snacks", isVeg: true, calories: 100, protein: 12.0, carbs: 6.0, fat: 2.0},
-      {name: "Oatmeal with fruits", benefit: "Heart-healthy and rich in fiber", meal: "breakfast", isVeg: true, calories: 220, protein: 6.0, carbs: 38.0, fat: 4.0},
-      {name: "Avocado Toast", benefit: "Provides healthy fats and fiber", meal: "breakfast", isVeg: true, calories: 250, protein: 6.0, carbs: 28.0, fat: 12.0},
-      {name: "Egg white omelet", benefit: "High-protein and low-fat breakfast option", meal: "breakfast", isVeg: false, calories: 150, protein: 18.0, carbs: 2.0, fat: 3.0},
-      {name: "Grilled chicken salad", benefit: "Lean protein with vitamins and fiber", meal: "lunch", isVeg: false, calories: 220, protein: 28.0, carbs: 8.0, fat: 5.0},
-      {name: "Turkey wrap", benefit: "Lean protein option ideal for energy", meal: "lunch", isVeg: false, calories: 300, protein: 24.0, carbs: 32.0, fat: 7.0},
-      {name: "Tuna sandwich", benefit: "Omega-3 rich with quality protein", meal: "lunch", isVeg: false, calories: 280, protein: 22.0, carbs: 30.0, fat: 6.0},
-      {name: "Grilled salmon", benefit: "High in protein and omega-3 fatty acids", meal: "dinner", isVeg: false, calories: 260, protein: 26.0, carbs: 0.0, fat: 15.0},
-      {name: "Vegetable stir-fry", benefit: "Low-calorie and packed with micronutrients", meal: "lunch,dinner", isVeg: true, calories: 180, protein: 5.0, carbs: 22.0, fat: 6.0},
-      {name: "Tofu curry", benefit: "Plant-based protein rich in iron and calcium", meal: "lunch,dinner", isVeg: true, calories: 240, protein: 14.0, carbs: 12.0, fat: 11.0},
-      {name: "Lentil soup", benefit: "High in plant protein and fiber", meal: "lunch,dinner", isVeg: true, calories: 180, protein: 12.0, carbs: 28.0, fat: 2.0},
-      {name: "Quinoa bowl", benefit: "Complete protein with fiber and minerals", meal: "lunch,dinner", isVeg: true, calories: 250, protein: 9.0, carbs: 39.0, fat: 4.0},
-      {name: "Hummus with veggies", benefit: "Good source of fiber and plant-based protein", meal: "snacks", isVeg: true, calories: 160, protein: 5.0, carbs: 18.0, fat: 8.0},
-      {name: "Mixed almonds & walnuts", benefit: "High in healthy fats and protein", meal: "snacks", isVeg: true, calories: 200, protein: 6.0, carbs: 6.0, fat: 16.0},
-      {name: "Paneer Tikka", benefit: "Rich in calcium and vegetarian protein", meal: "lunch,dinner", isVeg: true, calories: 260, protein: 16.0, carbs: 8.0, fat: 14.0},
-      {name: "Protein Shake", benefit: "Quick muscle recovery drink", meal: "breakfast,snacks", isVeg: true, calories: 200, protein: 24.0, carbs: 5.0, fat: 3.0}
+      {name: "Asparagus Cooked", category: "Produce", benefit: "High in vitamin K, folate and antioxidants", meal: "lunch,dinner", isVeg: true, calories: 22, protein: 2.2, carbs: 3.8, fat: 0.2},
+      {name: "Avocados", category: "Produce", benefit: "Rich in healthy fats and potassium", meal: "breakfast", isVeg: true, calories: 160, protein: 2.0, carbs: 8.5, fat: 14.7},
+      {name: "Bananas", category: "Produce", benefit: "Great source of potassium and vitamin B6", meal: "breakfast", isVeg: true, calories: 89, protein: 1.1, carbs: 22.8, fat: 0.3},
+      {name: "Bagels wheat", category: "Grains", benefit: "Provides complex carbohydrates for energy", meal: "breakfast,lunch", isVeg: true, calories: 250, protein: 10.0, carbs: 48.0, fat: 1.5},
+      {name: "Berries Mix", category: "Produce", benefit: "High in antioxidants and vitamin C", meal: "breakfast,snacks", isVeg: true, calories: 60, protein: 1.0, carbs: 14.0, fat: 0.5},
+      {name: "Broccoli Steamed", category: "Produce", benefit: "Rich in vitamins K and C, potent antioxidant", meal: "lunch,dinner", isVeg: true, calories: 35, protein: 2.8, carbs: 7.0, fat: 0.4},
+      {name: "Brown Rice", category: "Grains", benefit: "Good source of fiber and magnesium", meal: "lunch,dinner", isVeg: true, calories: 216, protein: 5.0, carbs: 45.0, fat: 1.8},
+      {name: "Cauliflower Roast", category: "Produce", benefit: "High in fiber and vitamins C, K and B6", meal: "lunch,dinner", isVeg: true, calories: 40, protein: 2.0, carbs: 8.0, fat: 0.5},
+      {name: "American cheese", category: "Dairy", benefit: "Good source of calcium and protein", meal: "breakfast,snacks", isVeg: true, calories: 120, protein: 6.0, carbs: 2.0, fat: 9.0},
+      {name: "Dark Chocolate", category: "Snacks", benefit: "Contains antioxidants for heart health", meal: "snacks", isVeg: true, calories: 170, protein: 2.2, carbs: 13.0, fat: 12.0},
+      {name: "Greek Yogurt", category: "Dairy", benefit: "High in protein and probiotics for gut health", meal: "breakfast,snacks", isVeg: true, calories: 100, protein: 12.0, carbs: 6.0, fat: 2.0},
+      {name: "Oatmeal with fruits", category: "Grains", benefit: "Heart-healthy and rich in fiber", meal: "breakfast", isVeg: true, calories: 220, protein: 6.0, carbs: 38.0, fat: 4.0},
+      {name: "Avocado Toast", category: "Grains", benefit: "Provides healthy fats and fiber", meal: "breakfast", isVeg: true, calories: 250, protein: 6.0, carbs: 28.0, fat: 12.0},
+      {name: "Egg white omelet", category: "Proteins", benefit: "High-protein and low-fat breakfast option", meal: "breakfast", isVeg: false, calories: 150, protein: 18.0, carbs: 2.0, fat: 3.0},
+      {name: "Grilled chicken salad", category: "Proteins", benefit: "Lean protein with vitamins and fiber", meal: "lunch", isVeg: false, calories: 220, protein: 28.0, carbs: 8.0, fat: 5.0},
+      {name: "Turkey wrap", category: "Proteins", benefit: "Lean protein option ideal for energy", meal: "lunch", isVeg: false, calories: 300, protein: 24.0, carbs: 32.0, fat: 7.0},
+      {name: "Tuna sandwich", category: "Proteins", benefit: "Omega-3 rich with quality protein", meal: "lunch", isVeg: false, calories: 280, protein: 22.0, carbs: 30.0, fat: 6.0},
+      {name: "Grilled salmon", category: "Proteins", benefit: "High in protein and omega-3 fatty acids", meal: "dinner", isVeg: false, calories: 260, protein: 26.0, carbs: 0.0, fat: 15.0},
+      {name: "Vegetable stir-fry", category: "Produce", benefit: "Low-calorie and packed with micronutrients", meal: "lunch,dinner", isVeg: true, calories: 180, protein: 5.0, carbs: 22.0, fat: 6.0},
+      {name: "Tofu curry", category: "Proteins", benefit: "Plant-based protein rich in iron and calcium", meal: "lunch,dinner", isVeg: true, calories: 240, protein: 14.0, carbs: 12.0, fat: 11.0},
+      {name: "Lentil soup", category: "Proteins", benefit: "High in plant protein and fiber", meal: "lunch,dinner", isVeg: true, calories: 180, protein: 12.0, carbs: 28.0, fat: 2.0},
+      {name: "Quinoa bowl", category: "Grains", benefit: "Complete protein with fiber and minerals", meal: "lunch,dinner", isVeg: true, calories: 250, protein: 9.0, carbs: 39.0, fat: 4.0},
+      {name: "Hummus with veggies", category: "Produce", benefit: "Good source of fiber and plant-based protein", meal: "snacks", isVeg: true, calories: 160, protein: 5.0, carbs: 18.0, fat: 8.0},
+      {name: "Mixed almonds & walnuts", category: "Snacks", benefit: "High in healthy fats and protein", meal: "snacks", isVeg: true, calories: 200, protein: 6.0, carbs: 6.0, fat: 16.0},
+      {name: "Paneer Tikka", category: "Dairy", benefit: "Rich in calcium and vegetarian protein", meal: "lunch,dinner", isVeg: true, calories: 260, protein: 16.0, carbs: 8.0, fat: 14.0},
+      {name: "Protein Shake", category: "Dairy", benefit: "Quick muscle recovery drink", meal: "breakfast,snacks", isVeg: true, calories: 200, protein: 24.0, carbs: 5.0, fat: 3.0}
     ];
 
     const healthTips = {
@@ -582,6 +744,7 @@
         if (found) return { ...found };
         return {
           name: food,
+          category: "Staples",
           benefit: "Nutritious selection supporting your health target",
           calories: 180,
           protein: 8,
@@ -593,6 +756,7 @@
       }
       return {
         name: food.name || "Healthy Choice",
+        category: food.category || "Staples",
         benefit: food.benefit || "Nutritious option",
         calories: parseInt(food.calories) || 180,
         protein: parseFloat(food.protein) || 8,
@@ -668,6 +832,68 @@
       });
 
       updateAnalyticsCharts();
+      renderGroceryList();
+    }
+
+    // Render Grocery List
+    function renderGroceryList() {
+      const container = document.getElementById('grocery-categories');
+      container.innerHTML = '';
+
+      const categories = {
+        "Produce & Veggies": [],
+        "Proteins & Dairy": [],
+        "Grains & Staples": [],
+        "Nuts & Snacks": []
+      };
+
+      ['breakfast', 'lunch', 'dinner', 'snacks'].forEach(category => {
+        if (currentDietPlan[category]) {
+          currentDietPlan[category].forEach(food => {
+            const cat = food.category || "Grains";
+            if (cat === "Produce") categories["Produce & Veggies"].push(food.name);
+            else if (cat === "Proteins" || cat === "Dairy") categories["Proteins & Dairy"].push(food.name);
+            else if (cat === "Grains") categories["Grains & Staples"].push(food.name);
+            else categories["Nuts & Snacks"].push(food.name);
+          });
+        }
+      });
+
+      Object.keys(categories).forEach(catName => {
+        const items = Array.from(new Set(categories[catName]));
+        if (items.length > 0) {
+          const catBox = document.createElement('div');
+          catBox.className = 'grocery-cat';
+          
+          let listHtml = `<ul class="grocery-list-items">`;
+          items.forEach(item => {
+            listHtml += `
+              <li class="grocery-item">
+                <input type="checkbox" onchange="toggleGroceryCheck(this)">
+                <span>${item}</span>
+              </li>
+            `;
+          });
+          listHtml += `</ul>`;
+
+          catBox.innerHTML = `<h4>${catName}</h4>${listHtml}`;
+          container.appendChild(catBox);
+        }
+      });
+    }
+
+    function toggleGroceryCheck(cb) {
+      const li = cb.closest('.grocery-item');
+      if (cb.checked) li.classList.add('checked');
+      else li.classList.remove('checked');
+    }
+
+    function scrollToGroceryList() {
+      document.getElementById('grocery-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function exportPDFOrPrint() {
+      window.print();
     }
 
     // Calculate Totals & Render Charts
