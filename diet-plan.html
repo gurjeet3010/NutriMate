@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NutriMate - Your Personalized Diet Plan</title>
+  <title>NutriMate - Your Personal Nutrition Dashboard</title>
   <!-- Google Fonts & Chart.js -->
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -13,9 +13,36 @@
       margin: 0;
       padding: 0;
     }
+    
+    :root {
+      --bg-color: #faedcd;
+      --container-bg: rgba(248, 251, 242, 0.95);
+      --card-bg: #ffffff;
+      --text-main: #2b2b2b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --primary-color: #606c38;
+      --primary-hover: #283618;
+      --secondary-color: #dda15e;
+      --sub-card: #f8fafc;
+    }
+
+    body.dark-theme {
+      --bg-color: #0f172a;
+      --container-bg: rgba(30, 41, 59, 0.96);
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --primary-color: #4ade80;
+      --primary-hover: #22c55e;
+      --secondary-color: #f59e0b;
+      --sub-card: #0f172a;
+    }
+
     body {
       font-family: 'Outfit', 'Segoe UI', sans-serif;
-      background: #faedcd;
+      background: var(--bg-color);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -26,18 +53,47 @@
       background-repeat: no-repeat;
       background-attachment: fixed; 
       background-position: center;
-      color: #2b2b2b;
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .container {
       width: 100%;
-      max-width: 950px;
-      background: rgba(248, 251, 242, 0.95);
+      max-width: 980px;
+      background: var(--container-bg);
       backdrop-filter: blur(12px);
       padding: 35px 40px;
       border-radius: 20px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    /* Top Bar with Dark Mode Toggle */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .theme-toggle-btn {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      transform: scale(1.03);
+      border-color: var(--primary-color);
     }
 
     .header-banner {
@@ -47,20 +103,20 @@
 
     .header-banner h2 {
       font-size: 32px;
-      color: #283618;
+      color: var(--primary-color);
       font-weight: 700;
       margin-bottom: 8px;
     }
 
     .header-banner p {
       font-size: 16px;
-      color: #606c38;
+      color: var(--text-muted);
     }
 
     /* User Profile Card */
     .user-info {
-      background: #fefae0;
-      border: 1px solid #dda15e;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
       border-radius: 14px;
       padding: 20px 25px;
       margin-bottom: 25px;
@@ -79,44 +135,98 @@
       font-size: 13px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #bc6c25;
+      color: var(--secondary-color);
       font-weight: 600;
     }
 
     .user-info-item span.val {
       font-size: 17px;
       font-weight: 700;
-      color: #283618;
+      color: var(--text-main);
     }
     
     .nutrition-tip {
-      background-color: #e9edc9;
-      border-left: 5px solid #606c38;
+      background-color: var(--card-bg);
+      border-left: 5px solid var(--primary-color);
       padding: 14px 18px;
       border-radius: 8px;
       margin-bottom: 30px;
       font-style: italic;
       font-size: 15px;
-      color: #283618;
+      color: var(--text-main);
       display: flex;
       align-items: center;
       gap: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    /* 7-Day Weekly Tabs Navigation */
+    .week-tabs-container {
+      margin-bottom: 25px;
+    }
+
+    .week-tabs-header {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .week-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .day-tab {
+      flex: 1;
+      min-width: 80px;
+      padding: 10px 14px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .day-tab:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .day-tab.active {
+      background: var(--primary-color);
+      color: #ffffff;
+      border-color: var(--primary-color);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    body.dark-theme .day-tab.active {
+      color: #0f172a;
     }
 
     /* Dashboard Analytics Section */
     .dashboard-analytics {
-      background: #ffffff;
+      background: var(--card-bg);
       border-radius: 16px;
       padding: 25px;
       margin-bottom: 35px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border-color);
     }
 
     .analytics-title {
       font-size: 20px;
       font-weight: 700;
-      color: #283618;
+      color: var(--text-main);
       margin-bottom: 20px;
       display: flex;
       align-items: center;
@@ -131,12 +241,14 @@
     }
 
     .stat-card {
-      background: #f8fafc;
+      background: var(--sub-card);
       padding: 16px;
       border-radius: 12px;
-      border-left: 4px solid #606c38;
+      border-left: 4px solid var(--primary-color);
       text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      border-top: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
     }
 
     .stat-card.calories { border-left-color: #e76f51; }
@@ -147,13 +259,13 @@
     .stat-card .num {
       font-size: 24px;
       font-weight: 700;
-      color: #1e293b;
+      color: var(--text-main);
       margin-top: 4px;
     }
 
     .stat-card .lbl {
       font-size: 13px;
-      color: #64748b;
+      color: var(--text-muted);
       font-weight: 600;
       text-transform: uppercase;
     }
@@ -166,7 +278,7 @@
     }
 
     .chart-box {
-      background: #ffffff;
+      background: var(--card-bg);
       padding: 15px;
       border-radius: 12px;
       position: relative;
@@ -175,6 +287,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      border: 1px solid var(--border-color);
     }
 
     .chart-box canvas {
@@ -188,8 +301,8 @@
     
     .meal-section h3 {
       font-size: 22px;
-      color: #283618;
-      border-bottom: 2px solid #ccd5ae;
+      color: var(--text-main);
+      border-bottom: 2px solid var(--border-color);
       padding-bottom: 8px;
       margin-bottom: 18px;
       display: flex;
@@ -199,11 +312,12 @@
 
     .meal-section h3 span.badge {
       font-size: 13px;
-      background: #e9edc9;
-      color: #606c38;
+      background: var(--sub-card);
+      color: var(--primary-color);
       padding: 4px 12px;
       border-radius: 20px;
       font-weight: 600;
+      border: 1px solid var(--border-color);
     }
 
     .food-grid {
@@ -213,11 +327,11 @@
     }
 
     .food-item {
-      background-color: #ffffff;
+      background-color: var(--card-bg);
       border-radius: 14px;
       padding: 18px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -226,7 +340,7 @@
 
     .food-item:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.09);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
     }
 
     .food-header {
@@ -238,7 +352,7 @@
 
     .food-item h4 {
       font-size: 18px;
-      color: #1e293b;
+      color: var(--text-main);
       font-weight: 600;
     }
 
@@ -264,7 +378,7 @@
 
     .food-item p.benefit {
       font-size: 14px;
-      color: #475569;
+      color: var(--text-muted);
       margin-bottom: 14px;
       line-height: 1.4;
     }
@@ -278,48 +392,66 @@
 
     .tag {
       font-size: 12px;
-      background: #f1f5f9;
-      color: #334155;
+      background: var(--sub-card);
+      color: var(--text-main);
       padding: 3px 8px;
       border-radius: 6px;
       font-weight: 500;
+      border: 1px solid var(--border-color);
     }
 
     .tag.cal { background: #ffedd5; color: #9a3412; font-weight: 600; }
 
-    /* Swap Button */
-    .swap-btn {
-      width: 100%;
-      padding: 9px 14px;
-      background-color: #f8fafc;
-      color: #606c38;
-      border: 1.5px dashed #606c38;
-      font-size: 14px;
+    .food-card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .card-btn {
+      flex: 1;
+      padding: 8px;
+      font-size: 13px;
       font-weight: 600;
       border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 4px;
       transition: all 0.2s ease;
     }
 
-    .swap-btn:hover {
-      background-color: #606c38;
+    .card-btn.swap {
+      background: var(--sub-card);
+      color: var(--primary-color);
+      border: 1.5px dashed var(--primary-color);
+    }
+
+    .card-btn.swap:hover {
+      background: var(--primary-color);
       color: white;
       border-style: solid;
     }
 
+    .card-btn.recipe {
+      background: var(--secondary-color);
+      color: white;
+      border: 1px solid var(--secondary-color);
+    }
+
+    .card-btn.recipe:hover {
+      filter: brightness(0.9);
+    }
+
     /* Grocery Shopping List Section */
     .grocery-section {
-      background: #ffffff;
+      background: var(--card-bg);
       border-radius: 16px;
       padding: 25px;
       margin-top: 35px;
       margin-bottom: 25px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border-color);
     }
 
     .grocery-header {
@@ -327,13 +459,13 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
-      border-bottom: 2px solid #e2e8f0;
+      border-bottom: 2px solid var(--border-color);
       padding-bottom: 10px;
     }
 
     .grocery-header h3 {
       font-size: 22px;
-      color: #283618;
+      color: var(--text-main);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -346,18 +478,18 @@
     }
 
     .grocery-cat {
-      background: #f8fafc;
+      background: var(--sub-card);
       border-radius: 12px;
       padding: 16px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border-color);
     }
 
     .grocery-cat h4 {
       font-size: 15px;
-      color: #606c38;
+      color: var(--primary-color);
       margin-bottom: 12px;
       font-weight: 700;
-      border-bottom: 1px solid #cbd5e1;
+      border-bottom: 1px solid var(--border-color);
       padding-bottom: 6px;
     }
 
@@ -373,19 +505,19 @@
       align-items: center;
       gap: 10px;
       font-size: 14px;
-      color: #334155;
+      color: var(--text-main);
     }
 
     .grocery-item input[type="checkbox"] {
       width: 16px;
       height: 16px;
-      accent-color: #606c38;
+      accent-color: var(--primary-color);
       cursor: pointer;
     }
 
     .grocery-item.checked span {
       text-decoration: line-through;
-      color: #94a3b8;
+      color: var(--text-muted);
     }
 
     /* Action Buttons Row */
@@ -397,7 +529,7 @@
       gap: 15px;
       margin-top: 35px;
       padding-top: 20px;
-      border-top: 1px solid #e2e8f0;
+      border-top: 1px solid var(--border-color);
     }
 
     .btn-group {
@@ -420,34 +552,98 @@
     }
 
     .btn-primary {
-      background-color: #606c38;
+      background-color: var(--primary-color);
       color: white;
     }
 
     .btn-primary:hover {
-      background-color: #283618;
+      filter: brightness(0.9);
       transform: translateY(-1px);
     }
 
     .btn-secondary {
-      background-color: #dda15e;
+      background-color: var(--secondary-color);
       color: white;
     }
 
     .btn-secondary:hover {
-      background-color: #bc6c25;
+      filter: brightness(0.9);
       transform: translateY(-1px);
     }
 
     .btn-outline {
       background-color: transparent;
-      color: #606c38;
-      border: 2px solid #606c38;
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
     }
 
     .btn-outline:hover {
-      background-color: #606c38;
+      background-color: var(--primary-color);
       color: white;
+    }
+
+    /* Recipe Modal Dialog */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      color: var(--text-main);
+      width: 100%;
+      max-width: 550px;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      border: 1px solid var(--border-color);
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-muted);
+      border: none;
+      background: none;
+    }
+
+    .recipe-meta {
+      display: flex;
+      gap: 15px;
+      margin: 15px 0;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .recipe-section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin: 16px 0 8px 0;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 4px;
+    }
+
+    .recipe-list {
+      padding-left: 20px;
+      font-size: 14px;
+      line-height: 1.6;
     }
 
     /* Floating AI Assistant UI */
@@ -455,7 +651,7 @@
       position: fixed;
       bottom: 25px;
       right: 25px;
-      background: #606c38;
+      background: var(--primary-color);
       color: white;
       padding: 14px 20px;
       border-radius: 30px;
@@ -470,9 +666,8 @@
       gap: 8px;
     }
 
-    #chatbot-toggle:hover {
-      background-color: #283618;
-      transform: translateY(-2px);
+    body.dark-theme #chatbot-toggle {
+      color: #0f172a;
     }
 
     #chatbot-box {
@@ -480,20 +675,24 @@
       bottom: 90px;
       right: 25px;
       width: 330px;
-      background-color: white;
+      background-color: var(--card-bg);
       border-radius: 16px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.25);
       z-index: 1000;
       overflow: hidden;
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border-color);
     }
 
     #chatbot-header {
-      background-color: #606c38;
+      background-color: var(--primary-color);
       color: white;
       padding: 14px;
       font-weight: 700;
       text-align: center;
+    }
+
+    body.dark-theme #chatbot-header {
+      color: #0f172a;
     }
 
     #chatbot-body {
@@ -514,9 +713,11 @@
       width: 100%;
       padding: 10px 14px;
       border-radius: 8px;
-      border: 1px solid #cbd5e1;
+      border: 1px solid var(--border-color);
       font-size: 14px;
       outline: none;
+      background: var(--sub-card);
+      color: var(--text-main);
     }
 
     /* Print & Export PDF Styling */
@@ -534,7 +735,7 @@
         max-width: 100% !important;
         background: transparent !important;
       }
-      #chatbot-toggle, #chatbot-box, .action-row, .swap-btn, .btn-group {
+      #chatbot-toggle, #chatbot-box, .action-row, .swap-btn, .btn-group, .top-nav, .week-tabs-container {
         display: none !important;
       }
       .food-item {
@@ -552,6 +753,14 @@
 <body>
 
   <div class="container">
+    <!-- Top Nav with Theme Switcher -->
+    <div class="top-nav">
+      <div style="font-weight: 700; font-size: 18px; color: var(--primary-color);">🥗 NutriMate Pro</div>
+      <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">
+        🌙 Dark Mode
+      </button>
+    </div>
+
     <div class="header-banner">
       <h2>🥗 Your Personal Nutrition Dashboard</h2>
       <p>Customized AI meal plan optimized for your body metrics & fitness goals</p>
@@ -567,9 +776,23 @@
       💡 Loading personalized nutrition insights...
     </div>
 
+    <!-- 7-Day Weekly Navigation Tabs -->
+    <div class="week-tabs-container">
+      <div class="week-tabs-header">📅 7-Day Weekly Meal Schedule</div>
+      <div class="week-tabs">
+        <div class="day-tab active" onclick="switchDayTab('mon')" id="tab-mon">Mon</div>
+        <div class="day-tab" onclick="switchDayTab('tue')" id="tab-tue">Tue</div>
+        <div class="day-tab" onclick="switchDayTab('wed')" id="tab-wed">Wed</div>
+        <div class="day-tab" onclick="switchDayTab('thu')" id="tab-thu">Thu</div>
+        <div class="day-tab" onclick="switchDayTab('fri')" id="tab-fri">Fri</div>
+        <div class="day-tab" onclick="switchDayTab('sat')" id="tab-sat">Sat</div>
+        <div class="day-tab" onclick="switchDayTab('sun')" id="tab-sun">Sun</div>
+      </div>
+    </div>
+
     <!-- Interactive Dashboard Analytics & Charts -->
     <div class="dashboard-analytics">
-      <div class="analytics-title">📊 Macro & Calorie Breakdown</div>
+      <div class="analytics-title">📊 Daily Macro & Calorie Breakdown</div>
       
       <!-- Quick Stats Row -->
       <div class="stats-row">
@@ -632,8 +855,8 @@
     <!-- Grocery Shopping List Generator Section -->
     <div class="grocery-section" id="grocery-section">
       <div class="grocery-header">
-        <h3>🛒 Automated Grocery Shopping List</h3>
-        <span style="font-size: 13px; color: #64748b; font-weight: 500;">Interactive Checklist</span>
+        <h3>🛒 Automated 7-Day Grocery Shopping List</h3>
+        <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Weekly Supplies Checklist</span>
       </div>
       <div class="grocery-categories" id="grocery-categories">
         <!-- Dynamically generated from current diet plan items -->
@@ -651,6 +874,36 @@
     </div>
   </div>
 
+  <!-- Recipe Modal Popup -->
+  <div class="modal-overlay" id="recipe-modal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeRecipeModal()">✕</button>
+
+      <h3 id="modal-title" style="font-size: 22px; color: var(--primary-color);">Recipe Title</h3>
+      
+      <div class="recipe-meta">
+        <span id="modal-prep">⏱️ Prep: 15 mins</span>
+        <span id="modal-cal">🔥 220 kcal</span>
+        <span id="modal-portion">📏 1 bowl</span>
+      </div>
+
+      <div class="recipe-section-title">🥗 Ingredients</div>
+      <ul class="recipe-list" id="modal-ingredients">
+        <!-- Populated dynamically -->
+      </ul>
+
+      <div class="recipe-section-title">👩‍🍳 Step-by-Step Cooking Guide</div>
+      <ol class="recipe-list" id="modal-instructions">
+        <!-- Populated dynamically -->
+      </ol>
+
+      <div class="recipe-section-title">💡 Dietitian Nutrition Tip</div>
+      <p id="modal-tip" style="font-size: 14px; font-style: italic; color: var(--text-muted); margin-top: 4px;">
+        Nutritious meal rich in vitamins.
+      </p>
+    </div>
+  </div>
+
   <!-- Floating AI Assistant -->
   <div id="chatbot-toggle" onclick="toggleChatbot()">🤖 Ask NutriMate AI</div>
 
@@ -661,44 +914,44 @@
         <div><strong>NutriMate AI:</strong> Hello! Ask me any question about your meal plan or macro targets.</div>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">
-        <button onclick="sendQuickPrompt('High protein options')" style="font-size: 11px; padding: 4px 8px; background: #e9edc9; border: 1px solid #ccd5ae; border-radius: 12px; cursor: pointer;">💪 High Protein</button>
-        <button onclick="sendQuickPrompt('Hydration advice')" style="font-size: 11px; padding: 4px 8px; background: #e9edc9; border: 1px solid #ccd5ae; border-radius: 12px; cursor: pointer;">💧 Hydration</button>
-        <button onclick="sendQuickPrompt('Weight loss tips')" style="font-size: 11px; padding: 4px 8px; background: #e9edc9; border: 1px solid #ccd5ae; border-radius: 12px; cursor: pointer;">📉 Weight Loss</button>
-        <button onclick="sendQuickPrompt('Muscle gain tips')" style="font-size: 11px; padding: 4px 8px; background: #e9edc9; border: 1px solid #ccd5ae; border-radius: 12px; cursor: pointer;">🏋️ Muscle Gain</button>
+        <button onclick="sendQuickPrompt('High protein options')" style="font-size: 11px; padding: 4px 8px; background: var(--sub-card); border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; color: var(--text-main);">💪 High Protein</button>
+        <button onclick="sendQuickPrompt('Hydration advice')" style="font-size: 11px; padding: 4px 8px; background: var(--sub-card); border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; color: var(--text-main);">💧 Hydration</button>
+        <button onclick="sendQuickPrompt('Weight loss tips')" style="font-size: 11px; padding: 4px 8px; background: var(--sub-card); border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; color: var(--text-main);">📉 Weight Loss</button>
+        <button onclick="sendQuickPrompt('Muscle gain tips')" style="font-size: 11px; padding: 4px 8px; background: var(--sub-card); border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; color: var(--text-main);">🏋️ Muscle Gain</button>
       </div>
       <input type="text" id="chat-input" placeholder="Type your question..." onkeydown="if(event.key==='Enter') sendMessage()" />
     </div>
   </div>
 
   <script>
-    // Master food dataset for client-side fallback & dynamic item swapping
+    // Master food dataset with recipe steps & portion measurements
     const foodDatabase = [
-      {name: "Asparagus Cooked", category: "Produce", benefit: "High in vitamin K, folate and antioxidants", meal: "lunch,dinner", isVeg: true, calories: 22, protein: 2.2, carbs: 3.8, fat: 0.2},
-      {name: "Avocados", category: "Produce", benefit: "Rich in healthy fats and potassium", meal: "breakfast", isVeg: true, calories: 160, protein: 2.0, carbs: 8.5, fat: 14.7},
-      {name: "Bananas", category: "Produce", benefit: "Great source of potassium and vitamin B6", meal: "breakfast", isVeg: true, calories: 89, protein: 1.1, carbs: 22.8, fat: 0.3},
-      {name: "Bagels wheat", category: "Grains", benefit: "Provides complex carbohydrates for energy", meal: "breakfast,lunch", isVeg: true, calories: 250, protein: 10.0, carbs: 48.0, fat: 1.5},
-      {name: "Berries Mix", category: "Produce", benefit: "High in antioxidants and vitamin C", meal: "breakfast,snacks", isVeg: true, calories: 60, protein: 1.0, carbs: 14.0, fat: 0.5},
-      {name: "Broccoli Steamed", category: "Produce", benefit: "Rich in vitamins K and C, potent antioxidant", meal: "lunch,dinner", isVeg: true, calories: 35, protein: 2.8, carbs: 7.0, fat: 0.4},
-      {name: "Brown Rice", category: "Grains", benefit: "Good source of fiber and magnesium", meal: "lunch,dinner", isVeg: true, calories: 216, protein: 5.0, carbs: 45.0, fat: 1.8},
-      {name: "Cauliflower Roast", category: "Produce", benefit: "High in fiber and vitamins C, K and B6", meal: "lunch,dinner", isVeg: true, calories: 40, protein: 2.0, carbs: 8.0, fat: 0.5},
-      {name: "American cheese", category: "Dairy", benefit: "Good source of calcium and protein", meal: "breakfast,snacks", isVeg: true, calories: 120, protein: 6.0, carbs: 2.0, fat: 9.0},
-      {name: "Dark Chocolate", category: "Snacks", benefit: "Contains antioxidants for heart health", meal: "snacks", isVeg: true, calories: 170, protein: 2.2, carbs: 13.0, fat: 12.0},
-      {name: "Greek Yogurt", category: "Dairy", benefit: "High in protein and probiotics for gut health", meal: "breakfast,snacks", isVeg: true, calories: 100, protein: 12.0, carbs: 6.0, fat: 2.0},
-      {name: "Oatmeal with fruits", category: "Grains", benefit: "Heart-healthy and rich in fiber", meal: "breakfast", isVeg: true, calories: 220, protein: 6.0, carbs: 38.0, fat: 4.0},
-      {name: "Avocado Toast", category: "Grains", benefit: "Provides healthy fats and fiber", meal: "breakfast", isVeg: true, calories: 250, protein: 6.0, carbs: 28.0, fat: 12.0},
-      {name: "Egg white omelet", category: "Proteins", benefit: "High-protein and low-fat breakfast option", meal: "breakfast", isVeg: false, calories: 150, protein: 18.0, carbs: 2.0, fat: 3.0},
-      {name: "Grilled chicken salad", category: "Proteins", benefit: "Lean protein with vitamins and fiber", meal: "lunch", isVeg: false, calories: 220, protein: 28.0, carbs: 8.0, fat: 5.0},
-      {name: "Turkey wrap", category: "Proteins", benefit: "Lean protein option ideal for energy", meal: "lunch", isVeg: false, calories: 300, protein: 24.0, carbs: 32.0, fat: 7.0},
-      {name: "Tuna sandwich", category: "Proteins", benefit: "Omega-3 rich with quality protein", meal: "lunch", isVeg: false, calories: 280, protein: 22.0, carbs: 30.0, fat: 6.0},
-      {name: "Grilled salmon", category: "Proteins", benefit: "High in protein and omega-3 fatty acids", meal: "dinner", isVeg: false, calories: 260, protein: 26.0, carbs: 0.0, fat: 15.0},
-      {name: "Vegetable stir-fry", category: "Produce", benefit: "Low-calorie and packed with micronutrients", meal: "lunch,dinner", isVeg: true, calories: 180, protein: 5.0, carbs: 22.0, fat: 6.0},
-      {name: "Tofu curry", category: "Proteins", benefit: "Plant-based protein rich in iron and calcium", meal: "lunch,dinner", isVeg: true, calories: 240, protein: 14.0, carbs: 12.0, fat: 11.0},
-      {name: "Lentil soup", category: "Proteins", benefit: "High in plant protein and fiber", meal: "lunch,dinner", isVeg: true, calories: 180, protein: 12.0, carbs: 28.0, fat: 2.0},
-      {name: "Quinoa bowl", category: "Grains", benefit: "Complete protein with fiber and minerals", meal: "lunch,dinner", isVeg: true, calories: 250, protein: 9.0, carbs: 39.0, fat: 4.0},
-      {name: "Hummus with veggies", category: "Produce", benefit: "Good source of fiber and plant-based protein", meal: "snacks", isVeg: true, calories: 160, protein: 5.0, carbs: 18.0, fat: 8.0},
-      {name: "Mixed almonds & walnuts", category: "Snacks", benefit: "High in healthy fats and protein", meal: "snacks", isVeg: true, calories: 200, protein: 6.0, carbs: 6.0, fat: 16.0},
-      {name: "Paneer Tikka", category: "Dairy", benefit: "Rich in calcium and vegetarian protein", meal: "lunch,dinner", isVeg: true, calories: 260, protein: 16.0, carbs: 8.0, fat: 14.0},
-      {name: "Protein Shake", category: "Dairy", benefit: "Quick muscle recovery drink", meal: "breakfast,snacks", isVeg: true, calories: 200, protein: 24.0, carbs: 5.0, fat: 3.0}
+      {name: "Asparagus Cooked", portion: "1 cup cooked (180g)", category: "Produce", benefit: "High in vitamin K, folate and antioxidants", meal: "lunch,dinner", isVeg: true, calories: 22, protein: 2.2, carbs: 3.8, fat: 0.2, prepTime: "10 mins", ingredients: ["Fresh asparagus spears", "1 tsp Olive oil", "Pinch of Sea salt & black pepper"], instructions: ["Wash asparagus and trim woody ends.", "Heat olive oil in a skillet over medium heat.", "Sauté asparagus for 6-8 mins until tender-crisp and season with pepper."]},
+      {name: "Avocados", portion: "1/2 medium avocado (100g)", category: "Produce", benefit: "Rich in healthy fats and potassium", meal: "breakfast", isVeg: true, calories: 160, protein: 2.0, carbs: 8.5, fat: 14.7, prepTime: "3 mins", ingredients: ["1 Ripe Avocado", "Pinch of Lemon juice", "Sea salt"], instructions: ["Cut avocado in half and remove seed.", "Scoop out half and slice or mash lightly.", "Drizzle with lemon juice and salt."]},
+      {name: "Bananas", portion: "1 medium banana (120g)", category: "Produce", benefit: "Great source of potassium and vitamin B6", meal: "breakfast", isVeg: true, calories: 89, protein: 1.1, carbs: 22.8, fat: 0.3, prepTime: "1 min", ingredients: ["1 Ripe Banana"], instructions: ["Peel and slice or enjoy whole as a quick energy source."]},
+      {name: "Bagels wheat", portion: "1 whole wheat bagel (90g)", category: "Grains", benefit: "Provides complex carbohydrates for energy", meal: "breakfast,lunch", isVeg: true, calories: 250, protein: 10.0, carbs: 48.0, fat: 1.5, prepTime: "5 mins", ingredients: ["1 Whole wheat bagel", "1 tsp Light spread"], instructions: ["Slice bagel in half.", "Toast until golden brown.", "Spread lightly with spread or nut butter."]},
+      {name: "Berries Mix", portion: "1/2 cup mixed berries (75g)", category: "Produce", benefit: "High in antioxidants and vitamin C", meal: "breakfast,snacks", isVeg: true, calories: 60, protein: 1.0, carbs: 14.0, fat: 0.5, prepTime: "2 mins", ingredients: ["Blueberries", "Strawberries", "Raspberries"], instructions: ["Rinse berries under cool water.", "Pat dry and serve fresh in a small bowl."]},
+      {name: "Broccoli Steamed", portion: "1 cup steamed (150g)", category: "Produce", benefit: "Rich in vitamins K and C, potent antioxidant", meal: "lunch,dinner", isVeg: true, calories: 35, protein: 2.8, carbs: 7.0, fat: 0.4, prepTime: "8 mins", ingredients: ["Broccoli florets", "Water", "Pinch of Garlic powder"], instructions: ["Chop broccoli into bite-sized florets.", "Place in steamer basket over boiling water for 5 mins.", "Season with garlic powder."]},
+      {name: "Brown Rice", portion: "1 cup cooked (195g)", category: "Grains", benefit: "Good source of fiber and magnesium", meal: "lunch,dinner", isVeg: true, calories: 216, protein: 5.0, carbs: 45.0, fat: 1.8, prepTime: "25 mins", ingredients: ["1 cup Brown rice", "2 cups Water", "Pinch of Salt"], instructions: ["Rinse rice thoroughly under cold water.", "Combine rice and water in pot, bring to boil.", "Cover, reduce heat to low, simmer 25 mins."]},
+      {name: "Cauliflower Roast", portion: "1 cup roasted (125g)", category: "Produce", benefit: "High in fiber and vitamins C, K and B6", meal: "lunch,dinner", isVeg: true, calories: 40, protein: 2.0, carbs: 8.0, fat: 0.5, prepTime: "20 mins", ingredients: ["Cauliflower florets", "1 tsp Olive oil", "Paprika & Pepper"], instructions: ["Preheat oven to 200°C (400°F).", "Toss florets with olive oil and spices.", "Roast for 18-20 mins until golden."]},
+      {name: "American cheese", portion: "2 slices (40g)", category: "Dairy", benefit: "Good source of calcium and protein", meal: "breakfast,snacks", isVeg: true, calories: 120, protein: 6.0, carbs: 2.0, fat: 9.0, prepTime: "1 min", ingredients: ["2 Cheese Slices"], instructions: ["Serve with whole grain crackers or in a warm toastie."]},
+      {name: "Dark Chocolate", portion: "2 squares (30g)", category: "Snacks", benefit: "Contains antioxidants for heart health", meal: "snacks", isVeg: true, calories: 170, protein: 2.2, carbs: 13.0, fat: 12.0, prepTime: "1 min", ingredients: ["70%+ Dark Chocolate"], instructions: ["Break into 2 squares and savor slowly."]},
+      {name: "Greek Yogurt", portion: "1 cup (170g)", category: "Dairy", benefit: "High in protein and probiotics for gut health", meal: "breakfast,snacks", isVeg: true, calories: 100, protein: 12.0, carbs: 6.0, fat: 2.0, prepTime: "2 mins", ingredients: ["Plain Greek Yogurt", "Drizzle of Honey (optional)"], instructions: ["Scoop yogurt into a bowl.", "Top with honey or berries if desired."]},
+      {name: "Oatmeal with fruits", portion: "1 bowl (250g)", category: "Grains", benefit: "Heart-healthy and rich in fiber", meal: "breakfast", isVeg: true, calories: 220, protein: 6.0, carbs: 38.0, fat: 4.0, prepTime: "7 mins", ingredients: ["1/2 cup Rolled oats", "1 cup Almond milk", "Sliced Apple & Cinnamon"], instructions: ["Combine oats and milk in pot, bring to gentle boil.", "Simmer 5 mins while stirring.", "Top with apple slices and cinnamon."]},
+      {name: "Avocado Toast", portion: "2 slices toast + 1/2 avocado", category: "Grains", benefit: "Provides healthy fats and fiber", meal: "breakfast", isVeg: true, calories: 250, protein: 6.0, carbs: 28.0, fat: 12.0, prepTime: "5 mins", ingredients: ["2 Whole wheat bread slices", "1/2 Ripe Avocado", "Red pepper flakes"], instructions: ["Toast bread to desired crispness.", "Mash avocado with salt and spread over toast.", "Garnish with red pepper flakes."]},
+      {name: "Egg white omelet", portion: "3 egg whites + veggies", category: "Proteins", benefit: "High-protein and low-fat breakfast option", meal: "breakfast", isVeg: false, calories: 150, protein: 18.0, carbs: 2.0, fat: 3.0, prepTime: "8 mins", ingredients: ["3 Egg whites", "Diced Spinach & Tomatoes", "Cooking spray"], instructions: ["Whisk egg whites with salt.", "Pour into non-stick pan, add veggies.", "Fold when cooked through after 4 mins."]},
+      {name: "Grilled chicken salad", portion: "1 large bowl (300g)", category: "Proteins", benefit: "Lean protein with vitamins and fiber", meal: "lunch", isVeg: false, calories: 220, protein: 28.0, carbs: 8.0, fat: 5.0, prepTime: "15 mins", ingredients: ["150g Chicken breast", "Mixed Salad Greens", "Olive oil dressing"], instructions: ["Grill seasoned chicken breast for 6 mins per side.", "Slice chicken and toss with salad greens and dressing."]},
+      {name: "Turkey wrap", portion: "1 whole wrap (220g)", category: "Proteins", benefit: "Lean protein option ideal for energy", meal: "lunch", isVeg: false, calories: 300, protein: 24.0, carbs: 32.0, fat: 7.0, prepTime: "6 mins", ingredients: ["1 Whole wheat tortilla", "100g Sliced turkey breast", "Lettuce & Tomato"], instructions: ["Lay tortilla flat and line with turkey slices.", "Add lettuce and tomato slices.", "Roll up tightly and cut diagonally."]},
+      {name: "Tuna sandwich", portion: "1 sandwich (200g)", category: "Proteins", benefit: "Omega-3 rich with quality protein", meal: "lunch", isVeg: false, calories: 280, protein: 22.0, carbs: 30.0, fat: 6.0, prepTime: "6 mins", ingredients: ["1 can Canned tuna in water", "2 Bread slices", "1 tbsp Light Mayo"], instructions: ["Drain tuna and mix with mayo and pepper.", "Spread tuna mixture between bread slices."]},
+      {name: "Grilled salmon", portion: "1 fillet (180g)", category: "Proteins", benefit: "High in protein and omega-3 fatty acids", meal: "dinner", isVeg: false, calories: 260, protein: 26.0, carbs: 0.0, fat: 15.0, prepTime: "12 mins", ingredients: ["180g Salmon fillet", "1 tsp Olive oil", "Lemon wedge"], instructions: ["Season salmon fillet with salt, pepper, and lemon juice.", "Sear skin-side down in hot pan for 4 mins, flip for 3 mins."]},
+      {name: "Vegetable stir-fry", portion: "1.5 cups (250g)", category: "Produce", benefit: "Low-calorie and packed with micronutrients", meal: "lunch,dinner", isVeg: true, calories: 180, protein: 5.0, carbs: 22.0, fat: 6.0, prepTime: "12 mins", ingredients: ["Bell peppers, Broccoli, Snap peas", "1 tbsp Soy sauce", "1 tsp Sesame oil"], instructions: ["Chop veggies into strips.", "Heat sesame oil in wok, stir-fry veggies 5-7 mins.", "Add soy sauce and toss well."]},
+      {name: "Tofu curry", portion: "1 bowl (250g)", category: "Proteins", benefit: "Plant-based protein rich in iron and calcium", meal: "lunch,dinner", isVeg: true, calories: 240, protein: 14.0, carbs: 12.0, fat: 11.0, prepTime: "18 mins", ingredients: ["150g Firm Tofu cubes", "Coconut milk & Curry powder", "Diced veggies"], instructions: ["Cube and lightly pan-fry tofu.", "Simmer curry powder, coconut milk, and veggies in pot.", "Add tofu cubes and simmer 8 mins."]},
+      {name: "Lentil soup", portion: "1 bowl (300ml)", category: "Proteins", benefit: "High in plant protein and fiber", meal: "lunch,dinner", isVeg: true, calories: 180, protein: 12.0, carbs: 28.0, fat: 2.0, prepTime: "25 mins", ingredients: ["1/2 cup Brown lentils", "Diced carrots & onions", "Vegetable broth"], instructions: ["Sauté onions and carrots in pot.", "Add rinsed lentils and broth, bring to boil.", "Simmer covered for 20 mins."]},
+      {name: "Quinoa bowl", portion: "1 cup cooked (185g)", category: "Grains", benefit: "Complete protein with fiber and minerals", meal: "lunch,dinner", isVeg: true, calories: 250, protein: 9.0, carbs: 39.0, fat: 4.0, prepTime: "15 mins", ingredients: ["1/2 cup Quinoa", "1 cup Water", "Roasted veggies"], instructions: ["Rinse quinoa and cook in water for 15 mins until fluffy.", "Combine with roasted veggies in a bowl."]},
+      {name: "Hummus with veggies", portion: "3 tbsp hummus + veggie sticks", category: "Produce", benefit: "Good source of fiber and plant-based protein", meal: "snacks", isVeg: true, calories: 160, protein: 5.0, carbs: 18.0, fat: 8.0, prepTime: "4 mins", ingredients: ["3 tbsp Hummus", "Carrot & Cucumber sticks"], instructions: ["Slice carrots and cucumbers into sticks.", "Serve alongside fresh hummus."]},
+      {name: "Mixed almonds & walnuts", portion: "1 handful / 15 nuts (30g)", category: "Snacks", benefit: "High in healthy fats and protein", meal: "snacks", isVeg: true, calories: 200, protein: 6.0, carbs: 6.0, fat: 16.0, prepTime: "1 min", ingredients: ["10 Almonds", "5 Walnut halves"], instructions: ["Measure 1 handful of unsalted nuts for a crisp snack."]},
+      {name: "Paneer Tikka", portion: "5-6 cubes (150g)", category: "Dairy", benefit: "Rich in calcium and vegetarian protein", meal: "lunch,dinner", isVeg: true, calories: 260, protein: 16.0, carbs: 8.0, fat: 14.0, prepTime: "15 mins", ingredients: ["150g Paneer cubes", "Yogurt & Spices marinade", "Bell pepper & Onion"], instructions: ["Marinate paneer and peppers in spiced yogurt for 10 mins.", "Skewer and grill in oven/pan for 8 mins."]},
+      {name: "Protein Shake", portion: "1 scoop (30g) in 250ml milk/water", category: "Dairy", benefit: "Quick muscle recovery drink", meal: "breakfast,snacks", isVeg: true, calories: 200, protein: 24.0, carbs: 5.0, fat: 3.0, prepTime: "2 mins", ingredients: ["1 scoop Whey or Plant Protein", "250ml Almond milk/water"], instructions: ["Add protein powder to shaker with liquid.", "Shake vigorously for 20 seconds and enjoy."]}
     ];
 
     const healthTips = {
@@ -708,11 +961,28 @@
       "None": ["Drink at least 8 glasses of water daily.", "Balance your plate with equal proteins, complex carbs, and green vegetables."]
     };
 
-    let currentDietPlan = { breakfast: [], lunch: [], dinner: [], snacks: [] };
+    let activeDay = 'mon';
+    let weeklyPlan = {};
     let macroChartInstance = null;
     let calorieChartInstance = null;
 
-    // Load User Information
+    // Theme Switcher Logic
+    function toggleTheme() {
+      document.body.classList.toggle('dark-theme');
+      const isDark = document.body.classList.contains('dark-theme');
+      localStorage.setItem('nutrimate_theme', isDark ? 'dark' : 'light');
+      document.getElementById('theme-btn').textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+    }
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem('nutrimate_theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+        document.getElementById('theme-btn').textContent = '☀️ Light Mode';
+      }
+    }
+
+    // Load User Profile Info
     function displayUserInfo() {
       const userInfo = document.getElementById('user-info');
       const name = localStorage.getItem('userName') || 'Friend';
@@ -744,6 +1014,7 @@
         if (found) return { ...found };
         return {
           name: food,
+          portion: "1 serving (150g)",
           category: "Staples",
           benefit: "Nutritious selection supporting your health target",
           calories: 180,
@@ -751,11 +1022,15 @@
           carbs: 22,
           fat: 5,
           isVeg: true,
-          meal: mealCategory
+          meal: mealCategory,
+          prepTime: "10 mins",
+          ingredients: ["Primary ingredient", "Seasoning & Herbs"],
+          instructions: ["Prepare fresh ingredients.", "Cook thoroughly and serve warm."]
         };
       }
       return {
         name: food.name || "Healthy Choice",
+        portion: food.portion || "1 serving (150g)",
         category: food.category || "Staples",
         benefit: food.benefit || "Nutritious option",
         calories: parseInt(food.calories) || 180,
@@ -763,11 +1038,14 @@
         carbs: parseFloat(food.carbs) || 22,
         fat: parseFloat(food.fat) || 5,
         isVeg: food.isVeg !== undefined ? food.isVeg : true,
-        meal: mealCategory
+        meal: mealCategory,
+        prepTime: food.prepTime || "10 mins",
+        ingredients: food.ingredients || ["Main ingredients"],
+        instructions: food.instructions || ["Cook gently and enjoy."]
       };
     }
 
-    // Render Food Cards
+    // Render Food Card
     function renderFoodCard(food, mealCategory, index) {
       const foodItem = document.createElement('div');
       foodItem.className = 'food-item';
@@ -775,6 +1053,8 @@
       const isVegBadge = food.isVeg ? 
         `<span class="veg-badge veg">🌱 VEG</span>` : 
         `<span class="veg-badge non-veg">🍗 NON-VEG</span>`;
+
+      const portionStr = food.portion || "1 serving (150g)";
 
       foodItem.innerHTML = `
         <div>
@@ -784,50 +1064,126 @@
           </div>
           <p class="benefit">${food.benefit}</p>
           <div class="macro-tags">
+            <span class="tag" style="background: var(--sub-card); color: var(--text-main); font-weight: 600;">📏 ${portionStr}</span>
             <span class="tag cal">🔥 ${food.calories} kcal</span>
             <span class="tag">💪 ${food.protein}g Protein</span>
             <span class="tag">🌾 ${food.carbs}g Carbs</span>
           </div>
         </div>
-        <button class="swap-btn" onclick="swapItem('${mealCategory}', ${index})">
-          🔄 Swap Item
-        </button>
+        <div class="food-card-actions">
+          <button class="card-btn swap" onclick="swapItem('${mealCategory}', ${index})">
+            🔄 Swap
+          </button>
+          <button class="card-btn recipe" onclick="openRecipeModal('${mealCategory}', ${index})">
+            📖 Recipe
+          </button>
+        </div>
       `;
 
       return foodItem;
     }
 
-    // Item Swapping Logic
+    // Medical Condition Safety Check
+    function isFoodMedicallySafe(foodName, disease) {
+      if (!disease || disease === 'None') return true;
+      const name = foodName.toLowerCase();
+      const dis = disease.toLowerCase();
+
+      const highSugar = ["brownie", "marshmallows", "chocolate icecream", "vanilla ice cream", "strawberry icecream", "doughnut", "honey", "chocolate milk", "rice pudding"];
+      const highSodium = ["bacon", "pepperoni", "jerky", "fries", "burger", "popcorn", "nachos"];
+      const highSatFat = ["pork", "bacon", "pepperoni", "burger", "fried shrimp"];
+
+      if (dis.includes('diabet') && highSugar.some(s => name.includes(s))) return false;
+      if ((dis.includes('hypertens') || dis.includes('bp')) && highSodium.some(s => name.includes(s))) return false;
+      if (dis.includes('heart') && highSatFat.some(s => name.includes(s))) return false;
+
+      return true;
+    }
+
+    // Item Swapping Logic (Medically Safe & Prevents Duplicates for Active Day)
     function swapItem(mealCategory, index) {
       const isVegOnly = localStorage.getItem('userDietType') === '1';
+      const disease = localStorage.getItem('userDisease') || 'None';
+      const dayPlan = weeklyPlan[activeDay] || { breakfast: [], lunch: [], dinner: [], snacks: [] };
+
+      // Collect active names for the day
+      const activeNames = [];
+      ['breakfast', 'lunch', 'dinner', 'snacks'].forEach(cat => {
+        (dayPlan[cat] || []).forEach(f => { if (f && f.name) activeNames.push(f.name.toLowerCase()); });
+      });
+
       const alternatives = foodDatabase.filter(item => {
         const matchesMeal = item.meal.includes(mealCategory);
         const matchesVeg = !isVegOnly || item.isVeg;
-        const isDifferent = item.name.toLowerCase() !== currentDietPlan[mealCategory][index].name.toLowerCase();
-        return matchesMeal && matchesVeg && isDifferent;
+        const isUnique = !activeNames.includes(item.name.toLowerCase());
+        const isSafe = isFoodMedicallySafe(item.name, disease);
+        return matchesMeal && matchesVeg && isUnique && isSafe;
       });
 
       if (alternatives.length > 0) {
         const newItem = alternatives[Math.floor(Math.random() * alternatives.length)];
-        currentDietPlan[mealCategory][index] = newItem;
-        localStorage.setItem('dietPlan', JSON.stringify(currentDietPlan));
+        weeklyPlan[activeDay][mealCategory][index] = newItem;
+        localStorage.setItem('weeklyPlan', JSON.stringify(weeklyPlan));
         renderDietPlan();
       } else {
-        alert("No further alternative items found for this category.");
+        alert("No further unique & medically safe alternative items found for this category.");
       }
     }
 
-    // Render Entire Diet Plan & Update Dashboard
+    // Recipe Popup Modal
+    function openRecipeModal(mealCategory, index) {
+      const food = weeklyPlan[activeDay][mealCategory][index];
+      if (!food) return;
+
+      document.getElementById('modal-title').textContent = food.name;
+      document.getElementById('modal-prep').textContent = `⏱️ Prep: ${food.prepTime || '10 mins'}`;
+      document.getElementById('modal-cal').textContent = `🔥 ${food.calories} kcal`;
+      document.getElementById('modal-portion').textContent = `📏 ${food.portion || '1 serving'}`;
+
+      const ingList = document.getElementById('modal-ingredients');
+      ingList.innerHTML = '';
+      (food.ingredients || ["Fresh ingredients", "Herbs & Spices"]).forEach(ing => {
+        ingList.innerHTML += `<li>${ing}</li>`;
+      });
+
+      const instList = document.getElementById('modal-instructions');
+      instList.innerHTML = '';
+      (food.instructions || ["Cook thoroughly and serve warm."]).forEach(step => {
+        instList.innerHTML += `<li>${step}</li>`;
+      });
+
+      document.getElementById('modal-tip').textContent = `💡 ${food.benefit || 'Provides balanced micronutrients.'}`;
+
+      document.getElementById('recipe-modal').style.display = 'flex';
+    }
+
+    function closeRecipeModal() {
+      document.getElementById('recipe-modal').style.display = 'none';
+    }
+
+    // 7-Day Day Selector Tab Switching
+    function switchDayTab(dayKey) {
+      activeDay = dayKey;
+      document.querySelectorAll('.day-tab').forEach(tab => tab.classList.remove('active'));
+      const activeEl = document.getElementById(`tab-${dayKey}`);
+      if (activeEl) activeEl.classList.add('active');
+
+      renderDietPlan();
+    }
+
+    // Render Entire Diet Plan for Active Day & Update Analytics
     function renderDietPlan() {
+      const dayPlan = weeklyPlan[activeDay] || { breakfast: [], lunch: [], dinner: [], snacks: [] };
+
       ['breakfast', 'lunch', 'dinner', 'snacks'].forEach(category => {
         const container = document.getElementById(`${category}-foods`);
         container.innerHTML = '';
-        if (currentDietPlan[category] && currentDietPlan[category].length > 0) {
-          currentDietPlan[category].forEach((food, index) => {
+        if (dayPlan[category] && dayPlan[category].length > 0) {
+          dayPlan[category].forEach((food, index) => {
             container.appendChild(renderFoodCard(food, category, index));
           });
         } else {
-          container.innerHTML = '<p style="color:#64748b;">No items recommended.</p>';
+          container.innerHTML = '<p style="color:var(--text-muted);">No items recommended.</p>';
         }
       });
 
@@ -835,42 +1191,70 @@
       renderGroceryList();
     }
 
-    // Render Grocery List
+    // Helper to calculate 7-day weekly grocery quantity
+    function formatWeeklyGroceryItem(food, dailyCount) {
+      const weeklyCount = dailyCount * 7;
+      const portion = food.portion || "1 serving (150g)";
+      const gMatch = portion.match(/(\d+)\s*g/i);
+      
+      if (gMatch) {
+        const gramsPerServing = parseInt(gMatch[1]);
+        const totalGrams = gramsPerServing * weeklyCount;
+        const totalStr = totalGrams >= 1000 ? `${(totalGrams/1000).toFixed(1)} kg` : `${totalGrams} g`;
+        return `<strong>${food.name}</strong> <span style="color:var(--text-muted); font-size:12px;">(${weeklyCount} servings · ~${totalStr} / week)</span>`;
+      }
+      
+      return `<strong>${food.name}</strong> <span style="color:var(--text-muted); font-size:12px;">(${weeklyCount} servings / week)</span>`;
+    }
+
+    // Render 7-Day Grocery Checklist
     function renderGroceryList() {
       const container = document.getElementById('grocery-categories');
       container.innerHTML = '';
 
-      const categories = {
-        "Produce & Veggies": [],
-        "Proteins & Dairy": [],
-        "Grains & Staples": [],
-        "Nuts & Snacks": []
+      const categoryItems = {
+        "Produce & Veggies": {},
+        "Proteins & Dairy": {},
+        "Grains & Staples": {},
+        "Nuts & Snacks": {}
       };
 
-      ['breakfast', 'lunch', 'dinner', 'snacks'].forEach(category => {
-        if (currentDietPlan[category]) {
-          currentDietPlan[category].forEach(food => {
-            const cat = food.category || "Grains";
-            if (cat === "Produce") categories["Produce & Veggies"].push(food.name);
-            else if (cat === "Proteins" || cat === "Dairy") categories["Proteins & Dairy"].push(food.name);
-            else if (cat === "Grains") categories["Grains & Staples"].push(food.name);
-            else categories["Nuts & Snacks"].push(food.name);
-          });
-        }
+      ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].forEach(dKey => {
+        const dPlan = weeklyPlan[dKey] || {};
+        ['breakfast', 'lunch', 'dinner', 'snacks'].forEach(category => {
+          if (dPlan[category]) {
+            dPlan[category].forEach(food => {
+              const cat = food.category || "Grains";
+              let targetGroup = "Nuts & Snacks";
+              if (cat === "Produce") targetGroup = "Produce & Veggies";
+              else if (cat === "Proteins" || cat === "Dairy") targetGroup = "Proteins & Dairy";
+              else if (cat === "Grains") targetGroup = "Grains & Staples";
+
+              if (!categoryItems[targetGroup][food.name]) {
+                categoryItems[targetGroup][food.name] = { food: food, count: 0 };
+              }
+              categoryItems[targetGroup][food.name].count += 1;
+            });
+          }
+        });
       });
 
-      Object.keys(categories).forEach(catName => {
-        const items = Array.from(new Set(categories[catName]));
-        if (items.length > 0) {
+      Object.keys(categoryItems).forEach(catName => {
+        const foodMap = categoryItems[catName];
+        const foodKeys = Object.keys(foodMap);
+        
+        if (foodKeys.length > 0) {
           const catBox = document.createElement('div');
           catBox.className = 'grocery-cat';
           
           let listHtml = `<ul class="grocery-list-items">`;
-          items.forEach(item => {
+          foodKeys.forEach(key => {
+            const entry = foodMap[key];
+            const itemLabel = formatWeeklyGroceryItem(entry.food, entry.count);
             listHtml += `
               <li class="grocery-item">
                 <input type="checkbox" onchange="toggleGroceryCheck(this)">
-                <span>${item}</span>
+                <span>${itemLabel}</span>
               </li>
             `;
           });
@@ -896,16 +1280,18 @@
       window.print();
     }
 
-    // Calculate Totals & Render Charts
+    // Calculate Active Day Totals & Render Charts
     function updateAnalyticsCharts() {
       let totalCalories = 0;
       let totalProtein = 0;
       let totalCarbs = 0;
       let totalFat = 0;
 
+      const dayPlan = weeklyPlan[activeDay] || {};
+
       ['breakfast', 'lunch', 'dinner', 'snacks'].forEach(category => {
-        if (currentDietPlan[category]) {
-          currentDietPlan[category].forEach(food => {
+        if (dayPlan[category]) {
+          dayPlan[category].forEach(food => {
             totalCalories += food.calories || 0;
             totalProtein += food.protein || 0;
             totalCarbs += food.carbs || 0;
@@ -932,15 +1318,15 @@
             data: [Math.round(totalProtein), Math.round(totalCarbs), Math.round(totalFat)],
             backgroundColor: ['#2a9d8f', '#e9c46a', '#f4a261'],
             borderWidth: 2,
-            borderColor: '#ffffff'
+            borderColor: document.body.classList.contains('dark-theme') ? '#1e293b' : '#ffffff'
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'bottom' },
-            title: { display: true, text: 'Macronutrient Distribution (g)' }
+            legend: { position: 'bottom', labels: { color: document.body.classList.contains('dark-theme') ? '#f8fafc' : '#2b2b2b' } },
+            title: { display: true, text: 'Macronutrient Distribution (g)', color: document.body.classList.contains('dark-theme') ? '#f8fafc' : '#2b2b2b' }
           }
         }
       });
@@ -962,7 +1348,7 @@
           datasets: [{
             label: 'Calories (kcal)',
             data: [totalCalories, targetCalories],
-            backgroundColor: ['#e76f51', '#283618'],
+            backgroundColor: ['#e76f51', '#4ade80'],
             borderRadius: 8
           }]
         },
@@ -971,44 +1357,63 @@
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
-            title: { display: true, text: 'Calorie Target Comparison' }
+            title: { display: true, text: 'Calorie Target Comparison', color: document.body.classList.contains('dark-theme') ? '#f8fafc' : '#2b2b2b' }
           },
           scales: {
-            y: { beginAtZero: true }
+            x: { ticks: { color: document.body.classList.contains('dark-theme') ? '#f8fafc' : '#2b2b2b' } },
+            y: { beginAtZero: true, ticks: { color: document.body.classList.contains('dark-theme') ? '#f8fafc' : '#2b2b2b' } }
           }
         }
       });
     }
 
+    // Generate Initial 7-Day Plan
+    function generateInitialWeeklyPlan() {
+      const isVegOnly = localStorage.getItem('userDietType') === '1';
+      const disease = localStorage.getItem('userDisease') || 'None';
+      const filtered = foodDatabase.filter(food => (!isVegOnly || food.isVeg) && isFoodMedicallySafe(food.name, disease));
+
+      const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+      const plan = {};
+
+      days.forEach((day, dayIdx) => {
+        const b = filtered.filter(f => f.meal.includes('breakfast'));
+        const l = filtered.filter(f => f.meal.includes('lunch'));
+        const d = filtered.filter(f => f.meal.includes('dinner'));
+        const s = filtered.filter(f => f.meal.includes('snacks'));
+
+        plan[day] = {
+          breakfast: [b[dayIdx % b.length], b[(dayIdx + 1) % b.length]].map(item => normalizeFood(item, 'breakfast')),
+          lunch: [l[dayIdx % l.length], l[(dayIdx + 1) % l.length]].map(item => normalizeFood(item, 'lunch')),
+          dinner: [d[dayIdx % d.length], d[(dayIdx + 1) % d.length]].map(item => normalizeFood(item, 'dinner')),
+          snacks: [s[dayIdx % s.length], s[(dayIdx + 1) % s.length]].map(item => normalizeFood(item, 'snacks'))
+        };
+      });
+
+      return plan;
+    }
+
     // Initialize Page
     window.onload = function() {
+      initTheme();
       displayUserInfo();
       
       let savedPlan = null;
       try {
-        savedPlan = JSON.parse(localStorage.getItem('dietPlan'));
+        savedPlan = JSON.parse(localStorage.getItem('weeklyPlan'));
       } catch (e) {}
 
-      if (savedPlan && savedPlan.breakfast && savedPlan.breakfast.length > 0) {
-        ['breakfast', 'lunch', 'dinner', 'snacks'].forEach(cat => {
-          currentDietPlan[cat] = (savedPlan[cat] || []).map(item => normalizeFood(item, cat));
-        });
+      if (savedPlan && savedPlan.mon && savedPlan.mon.breakfast) {
+        weeklyPlan = savedPlan;
       } else {
-        // Generate Default Plan
-        const isVegOnly = localStorage.getItem('userDietType') === '1';
-        const filtered = foodDatabase.filter(food => !isVegOnly || food.isVeg);
-        
-        currentDietPlan.breakfast = filtered.filter(f => f.meal.includes('breakfast')).slice(0, 2);
-        currentDietPlan.lunch = filtered.filter(f => f.meal.includes('lunch')).slice(0, 2);
-        currentDietPlan.dinner = filtered.filter(f => f.meal.includes('dinner')).slice(0, 2);
-        currentDietPlan.snacks = filtered.filter(f => f.meal.includes('snacks')).slice(0, 2);
+        weeklyPlan = generateInitialWeeklyPlan();
+        localStorage.setItem('weeklyPlan', JSON.stringify(weeklyPlan));
       }
 
-      localStorage.setItem('dietPlan', JSON.stringify(currentDietPlan));
       renderDietPlan();
     };
 
-    // Chatbot toggles & prompt chips
+    // Chatbot functionality
     function toggleChatbot() {
       const box = document.getElementById('chatbot-box');
       box.style.display = box.style.display === 'none' ? 'block' : 'none';
@@ -1025,7 +1430,7 @@
       if (!msg) return;
 
       const chatBox = document.getElementById('chat-messages');
-      chatBox.innerHTML += `<div style="text-align: right; margin-bottom: 8px;"><span style="background: #606c38; color: white; padding: 8px 12px; border-radius: 12px 12px 2px 12px; display: inline-block; font-size: 13px;">${msg}</span></div>`;
+      chatBox.innerHTML += `<div style="text-align: right; margin-bottom: 8px;"><span style="background: var(--primary-color); color: white; padding: 8px 12px; border-radius: 12px 12px 2px 12px; display: inline-block; font-size: 13px;">${msg}</span></div>`;
 
       input.value = '...thinking';
       input.disabled = true;
@@ -1046,7 +1451,7 @@
         const data = await response.json();
         const replyText = data.reply || data.content || "I am here to support your nutrition journey!";
         
-        chatBox.innerHTML += `<div style="text-align: left; margin-bottom: 8px;"><span style="background: #f1f5f9; color: #1e293b; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 12px 12px 12px 2px; display: inline-block; font-size: 13px; line-height: 1.4;">🤖 <strong>NutriMate:</strong> ${replyText}</span></div>`;
+        chatBox.innerHTML += `<div style="text-align: left; margin-bottom: 8px;"><span style="background: var(--sub-card); color: var(--text-main); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 12px 12px 12px 2px; display: inline-block; font-size: 13px; line-height: 1.4;">🤖 <strong>NutriMate:</strong> ${replyText}</span></div>`;
       } catch (err) {
         chatBox.innerHTML += `<div style="text-align: left; margin-bottom: 8px;"><span style="background: #fef2f2; color: #991b1b; padding: 8px 12px; border-radius: 12px; display: inline-block; font-size: 13px;">🤖 <strong>NutriMate:</strong> Great question! Maintain hydration and align your macronutrients with your ${userContext.goal} goal.</span></div>`;
       }

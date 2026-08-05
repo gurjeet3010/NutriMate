@@ -725,11 +725,40 @@ def weight_loss():
         print(f"Error in weight-loss endpoint: {e}")
         return jsonify({"error": str(e)}), 500
 
+HIGH_SUGAR_ITEMS = {"brownie", "marshmallows", "chocolate icecream", "vanilla ice cream", 
+                    "strawberry icecream", "chocolate doughnuts", "honey", "chocolate milk", "rice pudding"}
+HIGH_SODIUM_ITEMS = {"bacon cooked", "pepperoni pizza", "beef jerky", "beef sticks", 
+                     "french fries", "cheese burger", "chicken popcorn", "nachos"}
+HIGH_SAT_FAT_ITEMS = {"pork cooked", "bacon cooked", "pepperoni pizza", "cheese burger", 
+                      "fried shrimp", "chocolate doughnuts"}
+
+def filter_foods_by_medical_condition(food_list, disease):
+    if not disease or disease == "None":
+        return food_list
+    
+    disease_lower = str(disease).lower()
+    filtered = []
+    for food in food_list:
+        if not food:
+            continue
+        food_name = food.lower() if isinstance(food, str) else str(food.get('name', '')).lower()
+        
+        if "diabet" in disease_lower and any(item in food_name for item in HIGH_SUGAR_ITEMS):
+            continue
+        if ("hypertens" in disease_lower or "bp" in disease_lower) and any(item in food_name for item in HIGH_SODIUM_ITEMS):
+            continue
+        if "heart" in disease_lower and any(item in food_name for item in HIGH_SAT_FAT_ITEMS):
+            continue
+            
+        filtered.append(food)
+        
+    return filtered if filtered else food_list
+
 # General prediction endpoint that routes to appropriate function
 @app.route('/predict-diet', methods=['POST'])
 def predict_diet():
     try:
-        data = request.get_json()
+        data = request.get_json() or {}
         print("Received data for prediction:", data)
         
         age = data.get('age', 30)
@@ -737,7 +766,8 @@ def predict_diet():
         weight = data.get('weight', 70)
         height = data.get('height', 170)
         goal = data.get('goal', 'Healthy')
-        cuisine = data.get('cuisine', None)  # Added cuisine parameter
+        cuisine = data.get('cuisine', None)
+        disease = data.get('disease', 'None')
         
         # Route to appropriate function based on goal
         if goal == 'Weight Gain':
@@ -746,6 +776,9 @@ def predict_diet():
             recommended_food = Weight_Loss(age, veg, weight, height, cuisine)
         else:  # Default to Healthy
             recommended_food = Healthy(age, veg, weight, height, cuisine)
+            
+        # Apply medical condition safety filters
+        recommended_food = filter_foods_by_medical_condition(recommended_food, disease)
             
         # Make sure we have enough items to create a complete meal plan
         # Filter out any None values first
