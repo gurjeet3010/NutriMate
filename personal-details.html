@@ -190,7 +190,7 @@
       position: fixed;
       bottom: 25px;
       right: 25px;
-      background: #606c38;
+      background: linear-gradient(135deg, #606c38, #283618);
       color: white;
       padding: 14px 20px;
       border-radius: 30px;
@@ -200,53 +200,180 @@
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
       z-index: 1000;
       transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     #chatbot-toggle:hover {
-      background-color: #283618;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
 
     #chatbot-box {
       position: fixed;
       bottom: 90px;
       right: 25px;
-      width: 330px;
+      width: 360px;
+      max-width: calc(100vw - 40px);
       background-color: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      border-radius: 20px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
       z-index: 1000;
       overflow: hidden;
       border: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
     }
 
     #chatbot-header {
-      background-color: #606c38;
+      background: linear-gradient(135deg, #606c38, #283618);
       color: white;
-      padding: 14px;
+      padding: 14px 18px;
       font-weight: 700;
-      text-align: center;
+      font-size: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-close-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
     }
 
     #chatbot-body {
       padding: 14px;
-      max-height: 280px;
-      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      height: 380px;
+      overflow: hidden;
     }
 
     #chat-messages {
-      font-size: 14px;
-      margin-bottom: 12px;
+      flex: 1;
+      font-size: 13.5px;
+      margin-bottom: 10px;
       display: flex;
       flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    #chat-messages::-webkit-scrollbar {
+      width: 5px;
+    }
+    #chat-messages::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+
+    .chat-user-msg {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #606c38, #283618);
+      color: white;
+      padding: 9px 14px;
+      border-radius: 16px 16px 4px 16px;
+      max-width: 82%;
+      font-size: 13.5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      word-wrap: break-word;
+    }
+
+    .chat-ai-msg {
+      align-self: flex-start;
+      background: #f8fafc;
+      color: #1e293b;
+      border: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      border-radius: 16px 16px 16px 4px;
+      max-width: 88%;
+      font-size: 13.5px;
+      line-height: 1.45;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      word-wrap: break-word;
+    }
+
+    .chat-chips-container {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 6px;
+      padding: 6px 0;
+      margin-bottom: 8px;
+    }
+    .chat-chips-container::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    .chat-chip {
+      white-space: nowrap;
+      font-size: 11.5px;
+      font-weight: 500;
+      padding: 5px 10px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      cursor: pointer;
+      color: #334155;
+      transition: all 0.2s ease;
+    }
+    .chat-chip:hover {
+      background: #606c38;
+      color: white;
+      border-color: #606c38;
+    }
+
+    .chat-input-row {
+      display: flex;
       gap: 8px;
+      align-items: center;
+      margin-top: auto;
     }
 
     #chat-input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 20px;
       border: 1px solid #cbd5e1;
+      font-size: 13.5px;
       outline: none;
+      background: #f8fafc;
+      color: #1e293b;
+      transition: border-color 0.2s;
+    }
+    #chat-input:focus {
+      border-color: #606c38;
+    }
+
+    .chat-send-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: none;
+      background: #606c38;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 15px;
+      transition: transform 0.2s, background-color 0.2s;
+      flex-shrink: 0;
+    }
+    .chat-send-btn:hover {
+      transform: scale(1.06);
+      background: #283618;
     }
   </style>
 </head>
@@ -392,12 +519,29 @@
   <div id="chatbot-toggle" onclick="toggleChatbot()">🤖 Ask NutriMate AI</div>
 
   <div id="chatbot-box" style="display: none;">
-    <div id="chatbot-header">NutriMate Assistant</div>
+    <div id="chatbot-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="display: inline-block; width: 8px; height: 8px; background: #22c55e; border-radius: 50%;"></span>
+        <span>NutriMate AI Assistant</span>
+      </div>
+      <button class="chat-close-btn" onclick="toggleChatbot()" title="Close Chat">✕</button>
+    </div>
     <div id="chatbot-body">
       <div id="chat-messages">
-        <div><strong>NutriMate:</strong> Need help filling in your details? Ask me anything!</div>
+        <div class="chat-ai-msg">
+          <strong>NutriMate AI:</strong> Need help filling in your profile or converting units? Ask me anything!
+        </div>
       </div>
-      <input type="text" id="chat-input" placeholder="Ask a question..." onkeydown="if(event.key==='Enter') sendMessage()" />
+      <div class="chat-chips-container">
+        <button class="chat-chip" onclick="sendQuickPrompt('convert 5.2 ft into cm')">📐 5.2 ft to cm</button>
+        <button class="chat-chip" onclick="sendQuickPrompt('convert 70 kg to lbs')">⚖️ 70 kg to lbs</button>
+        <button class="chat-chip" onclick="sendQuickPrompt('how to choose my goal?')">🎯 Choosing Goal</button>
+        <button class="chat-chip" onclick="sendQuickPrompt('calculate my BMI')">📊 Calc BMI</button>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Ask a question (e.g. convert 5.2 ft to cm)..." onkeydown="if(event.key==='Enter') sendMessage()" />
+        <button class="chat-send-btn" onclick="sendMessage()" title="Send Question">➤</button>
+      </div>
     </div>
   </div>
 
@@ -473,7 +617,7 @@
         if (goal === 'Weight Loss') endpoint = '/weight-loss';
         else if (goal === 'Weight Gain') endpoint = '/weight-gain';
 
-        const response = await fetch(`http://127.0.0.1:5000${endpoint}`, {
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestPayload)
@@ -502,7 +646,35 @@
     // Chatbot functionality
     function toggleChatbot() {
       const box = document.getElementById('chatbot-box');
-      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+      box.style.display = (box.style.display === 'none' || !box.style.display) ? 'flex' : 'none';
+      if (box.style.display === 'flex') {
+        setTimeout(() => {
+          const input = document.getElementById('chat-input');
+          if (input) input.focus();
+          const chatBox = document.getElementById('chat-messages');
+          if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+        }, 100);
+      }
+    }
+
+    function sendQuickPrompt(promptText) {
+      const input = document.getElementById('chat-input');
+      input.value = promptText;
+      sendMessage();
+    }
+
+    function formatMarkdown(text) {
+      if (!text) return "";
+      let html = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*(.*?)\*/g, "<em>$1</em>")
+        .replace(/\n\n/g, "<br/><br/>")
+        .replace(/\n• /g, "<br/>• ")
+        .replace(/\n/g, "<br/>");
+      return html;
     }
 
     async function sendMessage() {
@@ -511,26 +683,38 @@
       if (!msg) return;
 
       const chatBox = document.getElementById('chat-messages');
-      chatBox.innerHTML += `<div><strong>You:</strong> ${msg}</div>`;
-      input.value = '...thinking';
-      input.disabled = true;
-
-      try {
-        const response = await fetch('http://127.0.0.1:5000/chat', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ query: msg })
-        });
-        const data = await response.json();
-        chatBox.innerHTML += `<div><strong>NutriMate:</strong> ${data.reply || data.content}</div>`;
-      } catch (err) {
-        chatBox.innerHTML += `<div><strong>NutriMate:</strong> Focus on whole foods and adequate protein for your health goals.</div>`;
-      }
+      chatBox.innerHTML += `<div class="chat-user-msg">${formatMarkdown(msg)}</div>`;
 
       input.value = '';
+      input.placeholder = 'Thinking...';
+      input.disabled = true;
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      const userContext = {
+        goal: document.getElementById('goal')?.value || 'Healthy',
+        weight: parseFloat(document.getElementById('weight')?.value) || 70,
+        height: parseFloat(document.getElementById('height')?.value) || 170,
+        veg: parseInt(document.getElementById('dietType')?.value) || 1
+      };
+
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ query: msg, context: userContext })
+        });
+        const data = await response.json();
+        const replyText = data.reply || data.content || "I am here to support your nutrition journey!";
+        
+        chatBox.innerHTML += `<div class="chat-ai-msg"><strong>🤖 NutriMate AI:</strong><br/>${formatMarkdown(replyText)}</div>`;
+      } catch (err) {
+        chatBox.innerHTML += `<div class="chat-ai-msg" style="background: #fef2f2; border-color: #fecaca; color: #991b1b;"><strong>🤖 NutriMate:</strong> Focus on whole foods and adequate protein for your health goals.</div>`;
+      }
+
+      input.placeholder = 'Ask a question (e.g. convert 5.2 ft to cm)...';
       input.disabled = false;
       input.focus();
-      document.getElementById('chatbot-body').scrollTop = chatBox.scrollHeight;
+      chatBox.scrollTop = chatBox.scrollHeight;
     }
   </script>
 </body>

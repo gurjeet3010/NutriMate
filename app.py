@@ -5,6 +5,13 @@ import subprocess
 import fnmatch
 import pandas as pd
 import numpy as np
+
+# Load .env file
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
 try:
     import seaborn as sns
     import matplotlib.pyplot as plt
@@ -16,6 +23,7 @@ except Exception as e:
     print(f"Optional imports skipped: {e}")
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS  # Import CORS
+import gemini_integration  # Load .env and configure Gemini API engine
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)  # Enable CORS for all routes
@@ -928,8 +936,8 @@ def chat_assistant():
         user_message = data.get('query') or data.get('message') or ''
         user_context = data.get('context') or {}
         
-        from gemini_integration import query_gemini
-        ai_reply = query_gemini(user_message, user_context)
+        import gemini_integration
+        ai_reply = gemini_integration.query_gemini(user_message, user_context)
         
         return jsonify({
             "success": True,
@@ -972,4 +980,4 @@ if __name__ == '__main__':
         print(f"Available cuisines: {', '.join(unique_cuisines)}")
     
     # Run the Flask app
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=5000)
